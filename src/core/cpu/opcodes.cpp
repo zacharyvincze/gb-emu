@@ -99,7 +99,7 @@ void CPU::opcode59() { ld(e, c); }
 void CPU::opcode5A() { ld(e, d); }
 void CPU::opcode5B() { ld(e, e); }
 void CPU::opcode5C() { ld(e, h); }
-void CPU::opcode5D() { ld(e, l) }
+void CPU::opcode5D() { ld(e, l); }
 void CPU::opcode5E() { ld(e, hl); }
 void CPU::opcode5F() { ld(e, a); }
 
@@ -171,104 +171,106 @@ void CPU::opcode9D() { sbc(a, l); }
 void CPU::opcode9E() { sbc(a, hl); }
 void CPU::opcode9F() { sbc(a, a); }
 
-void CPU::opcodeA0() {}
-void CPU::opcodeA1() {}
-void CPU::opcodeA2() {}
-void CPU::opcodeA3() {}
-void CPU::opcodeA4() {}
-void CPU::opcodeA5() {}
-void CPU::opcodeA6() {}
-void CPU::opcodeA7() {}
-void CPU::opcodeA8() {}
-void CPU::opcodeA9() {}
-void CPU::opcodeAA() {}
-void CPU::opcodeAB() {}
-void CPU::opcodeAC() {}
-void CPU::opcodeAD() {}
-void CPU::opcodeAE() {}
-void CPU::opcodeAF() {}
+void CPU::opcodeA0() { op_and(a, b); }
+void CPU::opcodeA1() { op_and(a, c); }
+void CPU::opcodeA2() { op_and(a, d); }
+void CPU::opcodeA3() { op_and(a, e); }
+void CPU::opcodeA4() { op_and(a, h); }
+void CPU::opcodeA5() { op_and(a, l); }
+void CPU::opcodeA6() { op_and(a, hl); }
+void CPU::opcodeA7() { op_and(a, a); }
+void CPU::opcodeA8() { op_xor(a, b); }
+void CPU::opcodeA9() { op_xor(a, c); }
+void CPU::opcodeAA() { op_xor(a, d); }
+void CPU::opcodeAB() { op_xor(a, e); }
+void CPU::opcodeAC() { op_xor(a, h); }
+void CPU::opcodeAD() { op_xor(a, l); }
+void CPU::opcodeAE() { op_xor(a, hl); }
+void CPU::opcodeAF() { op_xor(a, a); }
 
-void CPU::opcodeB0() {}
-void CPU::opcodeB1() {}
-void CPU::opcodeB2() {}
-void CPU::opcodeB3() {}
-void CPU::opcodeB4() {}
-void CPU::opcodeB5() {}
-void CPU::opcodeB6() {}
-void CPU::opcodeB7() {}
-void CPU::opcodeB8() {}
-void CPU::opcodeB9() {}
-void CPU::opcodeBA() {}
-void CPU::opcodeBB() {}
-void CPU::opcodeBC() {}
-void CPU::opcodeBD() {}
-void CPU::opcodeBE() {}
-void CPU::opcodeBF() {}
+void CPU::opcodeB0() { op_or(a, b); }
+void CPU::opcodeB1() { op_or(a, c); }
+void CPU::opcodeB2() { op_or(a, d); }
+void CPU::opcodeB3() { op_or(a, e); }
+void CPU::opcodeB4() { op_or(a, h); }
+void CPU::opcodeB5() { op_or(a, l); }
+void CPU::opcodeB6() { op_or(a, hl); }
+void CPU::opcodeB7() { op_or(a, a); }
+void CPU::opcodeB8() { cp(a, b); }
+void CPU::opcodeB9() { cp(a, c); }
+void CPU::opcodeBA() { cp(a, d); }
+void CPU::opcodeBB() { cp(a, e); }
+void CPU::opcodeBC() { cp(a, h); }
+void CPU::opcodeBD() { cp(a, l); }
+void CPU::opcodeBE() { cp(a, hl); }
+void CPU::opcodeBF() { cp(a, a); }
 
-void CPU::opcodeC0() {}
-void CPU::opcodeC1() {}
-void CPU::opcodeC2() {}
-void CPU::opcodeC3() {}
-void CPU::opcodeC4() {}
-void CPU::opcodeC5() {}
-void CPU::opcodeC6() {}
-void CPU::opcodeC7() {}
-void CPU::opcodeC8() {}
-void CPU::opcodeC9() {}
-void CPU::opcodeCA() {}
-void CPU::opcodeCB() {}
-void CPU::opcodeCC() {}
-void CPU::opcodeCD() {}
-void CPU::opcodeCE() {}
-void CPU::opcodeCF() {}
+void CPU::opcodeC0() { ret(!f.getZero()); }
+void CPU::opcodeC1() { pop(bc); }
+void CPU::opcodeC2() { jp(!f.getZero()); }
+void CPU::opcodeC3() { jp(); }
+void CPU::opcodeC4() { call(!f.getZero()); }
+void CPU::opcodeC5() { push(bc); }
+void CPU::opcodeC6() { add(a); }
+void CPU::opcodeC7() { rst(0x00); }
+void CPU::opcodeC8() { ret(f.getZero()); }
+void CPU::opcodeC9() { ret(); }
+void CPU::opcodeCA() { jp(f.getZero()); }
+void CPU::opcodeCB() {
+    spdlog::error("Recieved CB opcode offset in regular opcode table.");
+}
+void CPU::opcodeCC() { call(f.getZero()); }
+void CPU::opcodeCD() { call(); }
+void CPU::opcodeCE() { adc(a); }
+void CPU::opcodeCF() { rst(0x08); }
 
-void CPU::opcodeD0() {}
-void CPU::opcodeD1() {}
-void CPU::opcodeD2() {}
-void CPU::opcodeD3() {}
-void CPU::opcodeD4() {}
-void CPU::opcodeD5() {}
-void CPU::opcodeD6() {}
-void CPU::opcodeD7() {}
-void CPU::opcodeD8() {}
-void CPU::opcodeD9() {}
-void CPU::opcodeDA() {}
-void CPU::opcodeDB() {}
-void CPU::opcodeDC() {}
-void CPU::opcodeDD() {}
-void CPU::opcodeDE() {}
-void CPU::opcodeDF() {}
+void CPU::opcodeD0() { ret(!f.getCarry()); }
+void CPU::opcodeD1() { pop(de); }
+void CPU::opcodeD2() { jp(!f.getCarry()); }
+void CPU::opcodeD3() { unimplimentedOpcode(); }
+void CPU::opcodeD4() { call(!f.getCarry()); }
+void CPU::opcodeD5() { push(de); }
+void CPU::opcodeD6() { sub(a); }
+void CPU::opcodeD7() { rst(0x10); }
+void CPU::opcodeD8() { ret(f.getCarry()); }
+void CPU::opcodeD9() { reti(); }
+void CPU::opcodeDA() { jp(f.getCarry()); }
+void CPU::opcodeDB() { unimplimentedOpcode(); }
+void CPU::opcodeDC() { call(f.getCarry()); }
+void CPU::opcodeDD() { unimplimentedOpcode(); }
+void CPU::opcodeDE() { sbc(a); }
+void CPU::opcodeDF() { rst(0x18); }
 
-void CPU::opcodeE0() {}
-void CPU::opcodeE1() {}
-void CPU::opcodeE2() {}
-void CPU::opcodeE3() {}
-void CPU::opcodeE4() {}
-void CPU::opcodeE5() {}
-void CPU::opcodeE6() {}
-void CPU::opcodeE7() {}
-void CPU::opcodeE8() {}
-void CPU::opcodeE9() {}
-void CPU::opcodeEA() {}
-void CPU::opcodeEB() {}
-void CPU::opcodeEC() {}
-void CPU::opcodeED() {}
-void CPU::opcodeEE() {}
-void CPU::opcodeEF() {}
+void CPU::opcodeE0() { ld(0xFF00 + getNextByte(), a); }
+void CPU::opcodeE1() { pop(hl); }
+void CPU::opcodeE2() { ld(0xFF00 + c.value(), a); }
+void CPU::opcodeE3() { unimplimentedOpcode(); }
+void CPU::opcodeE4() { unimplimentedOpcode(); }
+void CPU::opcodeE5() { push(hl); }
+void CPU::opcodeE6() { op_and(a); }
+void CPU::opcodeE7() { rst(0x20); }
+void CPU::opcodeE8() { add_signed(sp); }
+void CPU::opcodeE9() { jp(hl); }
+void CPU::opcodeEA() { ld(getNextWord(), a); }
+void CPU::opcodeEB() { unimplimentedOpcode(); }
+void CPU::opcodeEC() { unimplimentedOpcode(); }
+void CPU::opcodeED() { unimplimentedOpcode(); }
+void CPU::opcodeEE() { op_xor(a); }
+void CPU::opcodeEF() { rst(0x28); }
 
-void CPU::opcodeF0() {}
-void CPU::opcodeF1() {}
-void CPU::opcodeF2() {}
-void CPU::opcodeF3() {}
-void CPU::opcodeF4() {}
-void CPU::opcodeF5() {}
-void CPU::opcodeF6() {}
-void CPU::opcodeF7() {}
-void CPU::opcodeF8() {}
-void CPU::opcodeF9() {}
-void CPU::opcodeFA() {}
-void CPU::opcodeFB() {}
-void CPU::opcodeFC() {}
-void CPU::opcodeFD() {}
-void CPU::opcodeFE() {}
-void CPU::opcodeFF() {}
+void CPU::opcodeF0() { ld(a, (0xFF00 + getNextByte())); }
+void CPU::opcodeF1() { pop(af); }
+void CPU::opcodeF2() { ld(a, (0xFF00 + c.value())); }
+void CPU::opcodeF3() { di(); }
+void CPU::opcodeF4() { unimplimentedOpcode(); }
+void CPU::opcodeF5() { push(af); }
+void CPU::opcodeF6() { op_or(a); }
+void CPU::opcodeF7() { rst(0x30); }
+void CPU::opcodeF8() { ld_hl_sp(); }
+void CPU::opcodeF9() { ld(sp, hl); }
+void CPU::opcodeFA() { ld(a, getNextWord()); }
+void CPU::opcodeFB() { ei(); }
+void CPU::opcodeFC() { unimplimentedOpcode(); }
+void CPU::opcodeFD() { unimplimentedOpcode(); }
+void CPU::opcodeFE() { cp(a); }
+void CPU::opcodeFF() { rst(0x38); }

@@ -17,14 +17,27 @@ void CPU::ld_sp(WordRegister& reg) {
     mmu.write(address + 1, static_cast<uint8_t>((reg.value() & 0xFF00) >> 8));
 }
 
+void CPU::ld(WordRegister& reg, WordRegister& reg2) { reg.set(reg2.value()); }
+
 void CPU::ld(ByteRegister& reg, uint16_t address) {
     reg.set(mmu.read(address));
+}
+
+void CPU::ld(uint16_t address, ByteRegister& reg) {
+    mmu.write(address, reg.value());
 }
 
 void CPU::ld(ByteRegister& reg, ByteRegister& reg2) { ld(reg, reg2.value()); }
 
 void CPU::ld(ByteRegister& reg, WordRegister& word_reg) {
     ld(reg, word_reg.value());
+}
+
+void CPU::ld_hl_sp() {
+    uint16_t orig_val = sp.value();
+    add_signed(sp);
+    hl.set(sp.value());
+    sp.set(orig_val);
 }
 
 void CPU::ldi(WordRegister& reg, ByteRegister& byte_reg) {
@@ -45,6 +58,22 @@ void CPU::ldd(WordRegister& reg, ByteRegister& byte_reg) {
 void CPU::ldd(ByteRegister& byte_reg, WordRegister& reg) {
     ld(byte_reg, reg);
     reg.dec();
+}
+
+void CPU::pop(WordRegister& reg) {
+    uint8_t lower = mmu.read(sp.value());
+    sp.inc();
+    uint8_t upper = mmu.read(sp.value());
+    sp.inc();
+    reg.set((upper << 8) | lower);
+}
+
+void CPU::push(WordRegister& reg) {
+    uint16_t reg_value = reg.value();
+    sp.dec();
+    mmu.write(sp.value(), (reg_value >> 8) & 0xFF);
+    sp.dec();
+    mmu.write(sp.value(), reg_value & 0xFF);
 }
 
 /**
@@ -110,6 +139,19 @@ void CPU::add(ByteRegister& reg, WordRegister& addr) {
     add(reg, mmu.read(addr.value()));
 }
 
+void CPU::add(ByteRegister& reg) { add(reg, getNextByte()); }
+
+void CPU::add_signed(WordRegister& reg) {
+    uint16_t reg_value = reg.value();
+    int8_t value = (int8_t)getNextByte();
+    int result = static_cast<int>(reg_value + value);
+    f.setZero(false);
+    f.setSubtract(false);
+    f.setHalfCarry(((reg_value ^ value ^ (result & 0xFFFF)) & 0x10) == 0x10);
+    f.setCarry(((reg_value ^ value ^ (result & 0xFFFF)) & 0x100) == 0x100);
+    reg.set(static_cast<uint16_t>(result));
+}
+
 void CPU::adc(ByteRegister& reg, uint8_t value) {
     uint8_t reg_value = reg.value();
     uint8_t carry_value = f.getCarry();
@@ -123,6 +165,8 @@ void CPU::adc(ByteRegister& reg, uint8_t value) {
 void CPU::adc(ByteRegister& reg, ByteRegister& reg2) { adc(reg, reg2.value()); }
 
 void CPU::adc(ByteRegister& reg, WordRegister& addr) { adc(reg, addr.value()); }
+
+void CPU::adc(ByteRegister& reg) { adc(reg, getNextByte()); }
 
 void CPU::sub(ByteRegister& reg, uint8_t value) {
     uint8_t result = reg.value() - value;
@@ -140,6 +184,8 @@ void CPU::sub(ByteRegister& reg, WordRegister& addr) {
     sub(reg, mmu.read(addr.value()));
 }
 
+void CPU::sub(ByteRegister& reg) { sub(reg, getNextByte()); }
+
 void CPU::sbc(ByteRegister& reg, uint8_t value) {
     uint8_t carry_value = f.getCarry();
     uint8_t result = reg.value() - value - carry_value;
@@ -155,6 +201,76 @@ void CPU::sbc(ByteRegister& reg, ByteRegister& reg2) { sbc(reg, reg2.value()); }
 
 void CPU::sbc(ByteRegister& reg, WordRegister& addr) {
     sbc(reg, mmu.read(addr.value()));
+}
+
+void CPU::sbc(ByteRegister& reg) { sbc(reg, getNextByte()); }
+
+void CPU::op_and(ByteRegister& reg, uint8_t value) {
+    reg.set(reg.value() & value);
+    f.setZero(reg.value() == 0);
+    f.setSubtract(false);
+    f.setHalfCarry(true);
+    f.setCarry(false);
+}
+
+void CPU::op_and(ByteRegister& reg, ByteRegister& reg2) {
+    op_and(reg, reg2.value());
+}
+
+void CPU::op_and(ByteRegister& reg, WordRegister& addr) {
+    op_and(reg, mmu.read(addr.value()));
+}
+
+void CPU::op_and(ByteRegister& reg) { op_and(reg, getNextByte()); }
+
+void CPU::op_xor(ByteRegister& reg, uint8_t value) {
+    reg.set(reg.value() ^ value);
+    f.setZero(reg.value() == 0);
+    f.setSubtract(false);
+    f.setHalfCarry(false);
+    f.setCarry(false);
+}
+
+void CPU::op_xor(ByteRegister& reg, ByteRegister& reg2) {
+    op_xor(reg, reg2.value());
+}
+
+void CPU::op_xor(ByteRegister& reg, WordRegister& addr) {
+    op_xor(reg, mmu.read(addr.value()));
+}
+
+void CPU::op_xor(ByteRegister& reg) { op_xor(reg, getNextByte()); }
+
+void CPU::op_or(ByteRegister& reg, uint8_t value) {
+    reg.set(reg.value() | value);
+    f.setZero(reg.value() == 0);
+    f.setSubtract(false);
+    f.setHalfCarry(false);
+    f.setCarry(false);
+}
+
+void CPU::op_or(ByteRegister& reg, ByteRegister& reg2) {
+    op_or(reg, reg2.value());
+}
+
+void CPU::op_or(ByteRegister& reg, WordRegister& addr) {
+    op_or(reg, mmu.read(addr.value()));
+}
+
+void CPU::op_or(ByteRegister& reg) { op_or(reg, getNextByte()); }
+
+void CPU::cp(ByteRegister& reg, uint8_t value) {
+    uint result = reg.value() - value;
+    f.setCarry(value > reg.value());
+    f.setHalfCarry(((reg.value() & 0xF) - (value & 0xF)) < 0);
+    f.setZero(result == 0);
+    f.setSubtract(true);
+}
+
+void CPU::cp(ByteRegister& reg, ByteRegister& reg2) { cp(reg, reg2.value()); }
+
+void CPU::cp(ByteRegister& reg, WordRegister& addr) {
+    cp(reg, mmu.read(addr.value()));
 }
 
 void CPU::daa() {
@@ -218,12 +334,60 @@ void CPU::rra() {
 }
 
 /**
- * Jumps
+ * Jumps and Branches
  */
 void CPU::jr() { pc.set(pc.value() + (int8_t)getNextByte()); }
 
 void CPU::jr_cond(bool condition) {
     if (condition) jr();
+}
+
+void CPU::jp() { pc.set(getNextWord()); }
+
+void CPU::jp(bool condition) {
+    if (condition) jp();
+}
+
+void CPU::jp(WordRegister& reg) { pc.set(hl.value()); }
+
+void CPU::ret() {
+    uint8_t lower = mmu.read(sp.value());
+    sp.inc();
+    uint8_t upper = mmu.read(sp.value());
+    sp.inc();
+    pc.set((uint16_t)((upper << 8) | (lower)));
+}
+
+void CPU::ret(bool condition) {
+    if (condition) ret();
+}
+
+void CPU::reti() {
+    ret();
+    ei();
+}
+
+void CPU::call() {
+    sp.dec();
+    mmu.write(sp.value(), (pc.value() >> 8) & 0xFF);
+    sp.dec();
+    mmu.write(sp.value(), pc.value() & 0xFF);
+    pc.set(getNextWord());
+}
+
+void CPU::call(bool condition) {
+    if (condition) call();
+}
+
+/**
+ * Restarts
+ */
+void CPU::rst(uint8_t f) {
+    sp.dec();
+    mmu.write(sp.value(), (pc.value() >> 8) & 0xFF);
+    sp.dec();
+    mmu.write(sp.value(), pc.value() & 0xFF);
+    pc.set((uint16_t)f);
 }
 
 /**
@@ -233,6 +397,10 @@ void CPU::stop() {
     // TODO: Change this to something else later.
     exit(1);
 }
+
+void CPU::ei() { mmu.write(INTERRUPT_FLAG, 0x1); }
+
+void CPU::di() { mmu.write(INTERRUPT_FLAG, 0x0); }
 
 void CPU::scf() {
     f.setSubtract(false);

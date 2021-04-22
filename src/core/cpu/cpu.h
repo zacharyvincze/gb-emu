@@ -5,6 +5,8 @@
 #include "mmu.h"
 #include "register.h"
 
+#define INTERRUPT_FLAG 0xFFFF
+
 class CPU;
 typedef void (CPU::*CPUFn)();
 
@@ -51,11 +53,18 @@ class CPU {
     void ld(ByteRegister& reg, uint16_t address);
     void ld(ByteRegister& reg, WordRegister& word_reg);
     void ld(ByteRegister& reg, ByteRegister& reg2);
+    void ld(WordRegister& reg, WordRegister& reg2);
+
+    void ld(uint16_t address, ByteRegister& reg);
+    void ld_hl_sp();
 
     void ldi(WordRegister& reg, ByteRegister& byte_reg);
     void ldi(ByteRegister& byte_reg, WordRegister& reg);
     void ldd(WordRegister& reg, ByteRegister& byte_reg);
     void ldd(ByteRegister& byte_reg, WordRegister& reg);
+
+    void pop(WordRegister& reg);
+    void push(WordRegister& reg);
 
     void inc(WordRegister& reg);
     void inc(ByteRegister& reg);
@@ -72,6 +81,15 @@ class CPU {
 
     void jr();
     void jr_cond(bool condition);
+    void jp();
+    void jp(bool condition);
+    void jp(WordRegister& reg);
+
+    void ret();
+    void ret(bool condition);
+    void reti();
+    void call();
+    void call(bool condition);
 
     void stop();
 
@@ -80,18 +98,43 @@ class CPU {
     void add(ByteRegister& reg, uint8_t value);
     void add(ByteRegister& reg, ByteRegister& reg2);
     void add(ByteRegister& reg, WordRegister& addr);
+    void add(ByteRegister& reg);
+    void add_signed(WordRegister& reg);
 
     void adc(ByteRegister& reg, uint8_t value);
     void adc(ByteRegister& reg, ByteRegister& reg2);
     void adc(ByteRegister& reg, WordRegister& addr);
+    void adc(ByteRegister& reg);
 
     void sub(ByteRegister& reg, uint8_t value);
     void sub(ByteRegister& reg, ByteRegister& reg2);
     void sub(ByteRegister& reg, WordRegister& addr);
+    void sub(ByteRegister& reg);
 
     void sbc(ByteRegister& reg, uint8_t value);
     void sbc(ByteRegister& reg, ByteRegister& reg2);
     void sbc(ByteRegister& reg, WordRegister& addr);
+    void sbc(ByteRegister& reg);
+
+    void op_and(ByteRegister& reg, uint8_t value);
+    void op_and(ByteRegister& reg, ByteRegister& reg2);
+    void op_and(ByteRegister& reg, WordRegister& addr);
+    void op_and(ByteRegister& reg);
+
+    void op_xor(ByteRegister& reg, uint8_t value);
+    void op_xor(ByteRegister& reg, ByteRegister& reg2);
+    void op_xor(ByteRegister& reg, WordRegister& addr);
+    void op_xor(ByteRegister& reg);
+
+    void op_or(ByteRegister& reg, uint8_t value);
+    void op_or(ByteRegister& reg, ByteRegister& reg2);
+    void op_or(ByteRegister& reg, WordRegister& addr);
+    void op_or(ByteRegister& reg);
+
+    void cp(ByteRegister& reg, uint8_t value);
+    void cp(ByteRegister& reg, ByteRegister& reg2);
+    void cp(ByteRegister& reg, WordRegister& addr);
+    void cp(ByteRegister& reg);
 
     void daa();
     void cpl();
@@ -100,7 +143,12 @@ class CPU {
 
     void halt();
 
-    void Unimplementedopcode() { std::cout << "opcode is unimplemented.\n"; }
+    void ei();
+    void di();
+
+    void rst(uint8_t f);
+
+    void unimplimentedOpcode() { std::cout << "opcode is unimplemented.\n"; }
 
     // Beware below, I didn't want to turn off my auto-formatter
 
