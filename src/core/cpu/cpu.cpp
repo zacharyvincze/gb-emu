@@ -39,7 +39,7 @@ void CPU::init() {
 }
 
 uint8_t CPU::getNextByte() {
-    uint8_t opcode = mmu.read(pc.value);
+    uint8_t opcode = mmu.read(pc.value());
     pc.inc();
     return opcode;
 }
@@ -53,7 +53,7 @@ void CPU::GetCPUInformation() {
         "Registers:\nA: %02X\tB: %02X\tC: %02X\tD: %02X\nE: %02X\tH: %02X\tL: "
         "%02X\tF: %02X\nPC: %04X\tSP: %04X\n\nFlags:\nZ: %i\tS: %i\tC: %i\tHC: "
         "%i\n",
-        a.value, b.value, c.value, d.value, e.value, h.value, l.value, f.value,
-        pc.value, sp.value, f.getZero(), f.getSubtract(), f.getCarry(),
-        f.getHalfCarry());
+        a.value(), b.value(), c.value(), d.value(), e.value(), h.value(),
+        l.value(), f.value(), pc.value(), sp.value(), f.getZero(),
+        f.getSubtract(), f.getCarry(), f.getHalfCarry());
 }

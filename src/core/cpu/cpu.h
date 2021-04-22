@@ -44,25 +44,24 @@ class CPU {
     MMU& mmu;
 
     // Helper opcodes
-    void ld(HybridRegister& reg);
-    void ld(HybridRegister& addr, ByteRegister& reg);
-    void ld(ByteRegister& reg);
     void ld(WordRegister& reg);
+    void ld(WordRegister& addr, ByteRegister& reg);
+    void ld(ByteRegister& reg);
+    void ld_sp(WordRegister& reg);
     void ld(ByteRegister& reg, uint16_t address);
-    void ld(ByteRegister& reg, HybridRegister& word_reg);
+    void ld(ByteRegister& reg, WordRegister& word_reg);
+    void ld(ByteRegister& reg, ByteRegister& reg2);
 
-    void ldi(HybridRegister& reg, ByteRegister& byte_reg);
-    void ldi(ByteRegister& byte_reg, HybridRegister& reg);
-    void ldd(HybridRegister& reg, ByteRegister& byte_reg);
-    void ldd(ByteRegister& byte_reg, HybridRegister& reg);
+    void ldi(WordRegister& reg, ByteRegister& byte_reg);
+    void ldi(ByteRegister& byte_reg, WordRegister& reg);
+    void ldd(WordRegister& reg, ByteRegister& byte_reg);
+    void ldd(ByteRegister& byte_reg, WordRegister& reg);
 
-    void inc(HybridRegister& reg);
-    void inc(ByteRegister& reg);
     void inc(WordRegister& reg);
+    void inc(ByteRegister& reg);
     void inc(uint16_t address);
 
     void dec(ByteRegister& reg);
-    void dec(HybridRegister& reg);
     void dec(WordRegister& reg);
     void dec(uint16_t address);
 
@@ -76,14 +75,30 @@ class CPU {
 
     void stop();
 
-    void add(HybridRegister& reg, uint16_t value);
-    void add(HybridRegister& reg, HybridRegister& reg2);
-    void add(HybridRegister& reg, WordRegister& reg2);
-    void add(WordRegister& reg, HybridRegister& reg2);
+    void add(WordRegister& reg, uint16_t value);
+    void add(WordRegister& reg, WordRegister& reg2);
+    void add(ByteRegister& reg, uint8_t value);
+    void add(ByteRegister& reg, ByteRegister& reg2);
+    void add(ByteRegister& reg, WordRegister& addr);
+
+    void adc(ByteRegister& reg, uint8_t value);
+    void adc(ByteRegister& reg, ByteRegister& reg2);
+    void adc(ByteRegister& reg, WordRegister& addr);
+
+    void sub(ByteRegister& reg, uint8_t value);
+    void sub(ByteRegister& reg, ByteRegister& reg2);
+    void sub(ByteRegister& reg, WordRegister& addr);
+
+    void sbc(ByteRegister& reg, uint8_t value);
+    void sbc(ByteRegister& reg, ByteRegister& reg2);
+    void sbc(ByteRegister& reg, WordRegister& addr);
 
     void daa();
     void cpl();
     void scf();
+    void ccf();
+
+    void halt();
 
     void Unimplementedopcode() { std::cout << "opcode is unimplemented.\n"; }
 
