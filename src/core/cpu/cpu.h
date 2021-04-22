@@ -15,7 +15,11 @@ class CPU {
 
     void GetCPUInformation();
 
+    void init();
+
    private:
+    bool running;
+
     WordRegister sp;
     WordRegister pc;
 
@@ -34,714 +38,759 @@ class CPU {
     HybridRegister de;
     HybridRegister hl;
 
+    uint8_t getNextByte();
+    uint16_t getNextWord();
+
     MMU& mmu;
 
-    void UnimplementedOpcode() { std::cout << "Opcode is unimplemented.\n"; }
+    // Helper opcodes
+    void ld(HybridRegister& reg);
+    void ld(HybridRegister& addr, ByteRegister& reg);
+    void ld(ByteRegister& reg);
+    void ld(WordRegister& reg);
+    void ld(ByteRegister& reg, uint16_t address);
+    void ld(ByteRegister& reg, HybridRegister& word_reg);
+
+    void ldi(HybridRegister& reg, ByteRegister& byte_reg);
+    void ldi(ByteRegister& byte_reg, HybridRegister& reg);
+    void ldd(HybridRegister& reg, ByteRegister& byte_reg);
+    void ldd(ByteRegister& byte_reg, HybridRegister& reg);
+
+    void inc(HybridRegister& reg);
+    void inc(ByteRegister& reg);
+    void inc(WordRegister& reg);
+    void inc(uint16_t address);
+
+    void dec(ByteRegister& reg);
+    void dec(HybridRegister& reg);
+    void dec(WordRegister& reg);
+    void dec(uint16_t address);
+
+    void rlca();
+    void rrca();
+    void rla();
+    void rra();
+
+    void jr();
+    void jr_cond(bool condition);
+
+    void stop();
+
+    void add(HybridRegister& reg, uint16_t value);
+    void add(HybridRegister& reg, HybridRegister& reg2);
+    void add(HybridRegister& reg, WordRegister& reg2);
+    void add(WordRegister& reg, HybridRegister& reg2);
+
+    void daa();
+    void cpl();
+    void scf();
+
+    void Unimplementedopcode() { std::cout << "opcode is unimplemented.\n"; }
 
     // Beware below, I didn't want to turn off my auto-formatter
 
-    void Opcode00();
-    void Opcode01();
-    void Opcode02();
-    void Opcode03();
-    void Opcode04();
-    void Opcode05();
-    void Opcode06();
-    void Opcode07();
-    void Opcode08();
-    void Opcode09();
-    void Opcode0A();
-    void Opcode0B();
-    void Opcode0C();
-    void Opcode0D();
-    void Opcode0E();
-    void Opcode0F();
+    void opcode00();
+    void opcode01();
+    void opcode02();
+    void opcode03();
+    void opcode04();
+    void opcode05();
+    void opcode06();
+    void opcode07();
+    void opcode08();
+    void opcode09();
+    void opcode0A();
+    void opcode0B();
+    void opcode0C();
+    void opcode0D();
+    void opcode0E();
+    void opcode0F();
 
-    void Opcode10();
-    void Opcode11();
-    void Opcode12();
-    void Opcode13();
-    void Opcode14();
-    void Opcode15();
-    void Opcode16();
-    void Opcode17();
-    void Opcode18();
-    void Opcode19();
-    void Opcode1A();
-    void Opcode1B();
-    void Opcode1C();
-    void Opcode1D();
-    void Opcode1E();
-    void Opcode1F();
+    void opcode10();
+    void opcode11();
+    void opcode12();
+    void opcode13();
+    void opcode14();
+    void opcode15();
+    void opcode16();
+    void opcode17();
+    void opcode18();
+    void opcode19();
+    void opcode1A();
+    void opcode1B();
+    void opcode1C();
+    void opcode1D();
+    void opcode1E();
+    void opcode1F();
 
-    void Opcode20();
-    void Opcode21();
-    void Opcode22();
-    void Opcode23();
-    void Opcode24();
-    void Opcode25();
-    void Opcode26();
-    void Opcode27();
-    void Opcode28();
-    void Opcode29();
-    void Opcode2A();
-    void Opcode2B();
-    void Opcode2C();
-    void Opcode2D();
-    void Opcode2E();
-    void Opcode2F();
+    void opcode20();
+    void opcode21();
+    void opcode22();
+    void opcode23();
+    void opcode24();
+    void opcode25();
+    void opcode26();
+    void opcode27();
+    void opcode28();
+    void opcode29();
+    void opcode2A();
+    void opcode2B();
+    void opcode2C();
+    void opcode2D();
+    void opcode2E();
+    void opcode2F();
 
-    void Opcode30();
-    void Opcode31();
-    void Opcode32();
-    void Opcode33();
-    void Opcode34();
-    void Opcode35();
-    void Opcode36();
-    void Opcode37();
-    void Opcode38();
-    void Opcode39();
-    void Opcode3A();
-    void Opcode3B();
-    void Opcode3C();
-    void Opcode3D();
-    void Opcode3E();
-    void Opcode3F();
+    void opcode30();
+    void opcode31();
+    void opcode32();
+    void opcode33();
+    void opcode34();
+    void opcode35();
+    void opcode36();
+    void opcode37();
+    void opcode38();
+    void opcode39();
+    void opcode3A();
+    void opcode3B();
+    void opcode3C();
+    void opcode3D();
+    void opcode3E();
+    void opcode3F();
 
-    void Opcode40();
-    void Opcode41();
-    void Opcode42();
-    void Opcode43();
-    void Opcode44();
-    void Opcode45();
-    void Opcode46();
-    void Opcode47();
-    void Opcode48();
-    void Opcode49();
-    void Opcode4A();
-    void Opcode4B();
-    void Opcode4C();
-    void Opcode4D();
-    void Opcode4E();
-    void Opcode4F();
+    void opcode40();
+    void opcode41();
+    void opcode42();
+    void opcode43();
+    void opcode44();
+    void opcode45();
+    void opcode46();
+    void opcode47();
+    void opcode48();
+    void opcode49();
+    void opcode4A();
+    void opcode4B();
+    void opcode4C();
+    void opcode4D();
+    void opcode4E();
+    void opcode4F();
 
-    void Opcode50();
-    void Opcode51();
-    void Opcode52();
-    void Opcode53();
-    void Opcode54();
-    void Opcode55();
-    void Opcode56();
-    void Opcode57();
-    void Opcode58();
-    void Opcode59();
-    void Opcode5A();
-    void Opcode5B();
-    void Opcode5C();
-    void Opcode5D();
-    void Opcode5E();
-    void Opcode5F();
+    void opcode50();
+    void opcode51();
+    void opcode52();
+    void opcode53();
+    void opcode54();
+    void opcode55();
+    void opcode56();
+    void opcode57();
+    void opcode58();
+    void opcode59();
+    void opcode5A();
+    void opcode5B();
+    void opcode5C();
+    void opcode5D();
+    void opcode5E();
+    void opcode5F();
 
-    void Opcode60();
-    void Opcode61();
-    void Opcode62();
-    void Opcode63();
-    void Opcode64();
-    void Opcode65();
-    void Opcode66();
-    void Opcode67();
-    void Opcode68();
-    void Opcode69();
-    void Opcode6A();
-    void Opcode6B();
-    void Opcode6C();
-    void Opcode6D();
-    void Opcode6E();
-    void Opcode6F();
+    void opcode60();
+    void opcode61();
+    void opcode62();
+    void opcode63();
+    void opcode64();
+    void opcode65();
+    void opcode66();
+    void opcode67();
+    void opcode68();
+    void opcode69();
+    void opcode6A();
+    void opcode6B();
+    void opcode6C();
+    void opcode6D();
+    void opcode6E();
+    void opcode6F();
 
-    void Opcode70();
-    void Opcode71();
-    void Opcode72();
-    void Opcode73();
-    void Opcode74();
-    void Opcode75();
-    void Opcode76();
-    void Opcode77();
-    void Opcode78();
-    void Opcode79();
-    void Opcode7A();
-    void Opcode7B();
-    void Opcode7C();
-    void Opcode7D();
-    void Opcode7E();
-    void Opcode7F();
+    void opcode70();
+    void opcode71();
+    void opcode72();
+    void opcode73();
+    void opcode74();
+    void opcode75();
+    void opcode76();
+    void opcode77();
+    void opcode78();
+    void opcode79();
+    void opcode7A();
+    void opcode7B();
+    void opcode7C();
+    void opcode7D();
+    void opcode7E();
+    void opcode7F();
 
-    void Opcode80();
-    void Opcode81();
-    void Opcode82();
-    void Opcode83();
-    void Opcode84();
-    void Opcode85();
-    void Opcode86();
-    void Opcode87();
-    void Opcode88();
-    void Opcode89();
-    void Opcode8A();
-    void Opcode8B();
-    void Opcode8C();
-    void Opcode8D();
-    void Opcode8E();
-    void Opcode8F();
+    void opcode80();
+    void opcode81();
+    void opcode82();
+    void opcode83();
+    void opcode84();
+    void opcode85();
+    void opcode86();
+    void opcode87();
+    void opcode88();
+    void opcode89();
+    void opcode8A();
+    void opcode8B();
+    void opcode8C();
+    void opcode8D();
+    void opcode8E();
+    void opcode8F();
 
-    void Opcode90();
-    void Opcode91();
-    void Opcode92();
-    void Opcode93();
-    void Opcode94();
-    void Opcode95();
-    void Opcode96();
-    void Opcode97();
-    void Opcode98();
-    void Opcode99();
-    void Opcode9A();
-    void Opcode9B();
-    void Opcode9C();
-    void Opcode9D();
-    void Opcode9E();
-    void Opcode9F();
+    void opcode90();
+    void opcode91();
+    void opcode92();
+    void opcode93();
+    void opcode94();
+    void opcode95();
+    void opcode96();
+    void opcode97();
+    void opcode98();
+    void opcode99();
+    void opcode9A();
+    void opcode9B();
+    void opcode9C();
+    void opcode9D();
+    void opcode9E();
+    void opcode9F();
 
-    void OpcodeA0();
-    void OpcodeA1();
-    void OpcodeA2();
-    void OpcodeA3();
-    void OpcodeA4();
-    void OpcodeA5();
-    void OpcodeA6();
-    void OpcodeA7();
-    void OpcodeA8();
-    void OpcodeA9();
-    void OpcodeAA();
-    void OpcodeAB();
-    void OpcodeAC();
-    void OpcodeAD();
-    void OpcodeAE();
-    void OpcodeAF();
+    void opcodeA0();
+    void opcodeA1();
+    void opcodeA2();
+    void opcodeA3();
+    void opcodeA4();
+    void opcodeA5();
+    void opcodeA6();
+    void opcodeA7();
+    void opcodeA8();
+    void opcodeA9();
+    void opcodeAA();
+    void opcodeAB();
+    void opcodeAC();
+    void opcodeAD();
+    void opcodeAE();
+    void opcodeAF();
 
-    void OpcodeB0();
-    void OpcodeB1();
-    void OpcodeB2();
-    void OpcodeB3();
-    void OpcodeB4();
-    void OpcodeB5();
-    void OpcodeB6();
-    void OpcodeB7();
-    void OpcodeB8();
-    void OpcodeB9();
-    void OpcodeBA();
-    void OpcodeBB();
-    void OpcodeBC();
-    void OpcodeBD();
-    void OpcodeBE();
-    void OpcodeBF();
+    void opcodeB0();
+    void opcodeB1();
+    void opcodeB2();
+    void opcodeB3();
+    void opcodeB4();
+    void opcodeB5();
+    void opcodeB6();
+    void opcodeB7();
+    void opcodeB8();
+    void opcodeB9();
+    void opcodeBA();
+    void opcodeBB();
+    void opcodeBC();
+    void opcodeBD();
+    void opcodeBE();
+    void opcodeBF();
 
-    void OpcodeC0();
-    void OpcodeC1();
-    void OpcodeC2();
-    void OpcodeC3();
-    void OpcodeC4();
-    void OpcodeC5();
-    void OpcodeC6();
-    void OpcodeC7();
-    void OpcodeC8();
-    void OpcodeC9();
-    void OpcodeCA();
-    void OpcodeCB();
-    void OpcodeCC();
-    void OpcodeCD();
-    void OpcodeCE();
-    void OpcodeCF();
+    void opcodeC0();
+    void opcodeC1();
+    void opcodeC2();
+    void opcodeC3();
+    void opcodeC4();
+    void opcodeC5();
+    void opcodeC6();
+    void opcodeC7();
+    void opcodeC8();
+    void opcodeC9();
+    void opcodeCA();
+    void opcodeCB();
+    void opcodeCC();
+    void opcodeCD();
+    void opcodeCE();
+    void opcodeCF();
 
-    void OpcodeD0();
-    void OpcodeD1();
-    void OpcodeD2();
-    void OpcodeD3();
-    void OpcodeD4();
-    void OpcodeD5();
-    void OpcodeD6();
-    void OpcodeD7();
-    void OpcodeD8();
-    void OpcodeD9();
-    void OpcodeDA();
-    void OpcodeDB();
-    void OpcodeDC();
-    void OpcodeDD();
-    void OpcodeDE();
-    void OpcodeDF();
+    void opcodeD0();
+    void opcodeD1();
+    void opcodeD2();
+    void opcodeD3();
+    void opcodeD4();
+    void opcodeD5();
+    void opcodeD6();
+    void opcodeD7();
+    void opcodeD8();
+    void opcodeD9();
+    void opcodeDA();
+    void opcodeDB();
+    void opcodeDC();
+    void opcodeDD();
+    void opcodeDE();
+    void opcodeDF();
 
-    void OpcodeE0();
-    void OpcodeE1();
-    void OpcodeE2();
-    void OpcodeE3();
-    void OpcodeE4();
-    void OpcodeE5();
-    void OpcodeE6();
-    void OpcodeE7();
-    void OpcodeE8();
-    void OpcodeE9();
-    void OpcodeEA();
-    void OpcodeEB();
-    void OpcodeEC();
-    void OpcodeED();
-    void OpcodeEE();
-    void OpcodeEF();
+    void opcodeE0();
+    void opcodeE1();
+    void opcodeE2();
+    void opcodeE3();
+    void opcodeE4();
+    void opcodeE5();
+    void opcodeE6();
+    void opcodeE7();
+    void opcodeE8();
+    void opcodeE9();
+    void opcodeEA();
+    void opcodeEB();
+    void opcodeEC();
+    void opcodeED();
+    void opcodeEE();
+    void opcodeEF();
 
-    void OpcodeF0();
-    void OpcodeF1();
-    void OpcodeF2();
-    void OpcodeF3();
-    void OpcodeF4();
-    void OpcodeF5();
-    void OpcodeF6();
-    void OpcodeF7();
-    void OpcodeF8();
-    void OpcodeF9();
-    void OpcodeFA();
-    void OpcodeFB();
-    void OpcodeFC();
-    void OpcodeFD();
-    void OpcodeFE();
-    void OpcodeFF();
+    void opcodeF0();
+    void opcodeF1();
+    void opcodeF2();
+    void opcodeF3();
+    void opcodeF4();
+    void opcodeF5();
+    void opcodeF6();
+    void opcodeF7();
+    void opcodeF8();
+    void opcodeF9();
+    void opcodeFA();
+    void opcodeFB();
+    void opcodeFC();
+    void opcodeFD();
+    void opcodeFE();
+    void opcodeFF();
 
-    void CbOpcode00();
-    void CbOpcode01();
-    void CbOpcode02();
-    void CbOpcode03();
-    void CbOpcode04();
-    void CbOpcode05();
-    void CbOpcode06();
-    void CbOpcode07();
-    void CbOpcode08();
-    void CbOpcode09();
-    void CbOpcode0A();
-    void CbOpcode0B();
-    void CbOpcode0C();
-    void CbOpcode0D();
-    void CbOpcode0E();
-    void CbOpcode0F();
+    void cbopcode00();
+    void cbopcode01();
+    void cbopcode02();
+    void cbopcode03();
+    void cbopcode04();
+    void cbopcode05();
+    void cbopcode06();
+    void cbopcode07();
+    void cbopcode08();
+    void cbopcode09();
+    void cbopcode0A();
+    void cbopcode0B();
+    void cbopcode0C();
+    void cbopcode0D();
+    void cbopcode0E();
+    void cbopcode0F();
 
-    void CbOpcode10();
-    void CbOpcode11();
-    void CbOpcode12();
-    void CbOpcode13();
-    void CbOpcode14();
-    void CbOpcode15();
-    void CbOpcode16();
-    void CbOpcode17();
-    void CbOpcode18();
-    void CbOpcode19();
-    void CbOpcode1A();
-    void CbOpcode1B();
-    void CbOpcode1C();
-    void CbOpcode1D();
-    void CbOpcode1E();
-    void CbOpcode1F();
+    void cbopcode10();
+    void cbopcode11();
+    void cbopcode12();
+    void cbopcode13();
+    void cbopcode14();
+    void cbopcode15();
+    void cbopcode16();
+    void cbopcode17();
+    void cbopcode18();
+    void cbopcode19();
+    void cbopcode1A();
+    void cbopcode1B();
+    void cbopcode1C();
+    void cbopcode1D();
+    void cbopcode1E();
+    void cbopcode1F();
 
-    void CbOpcode20();
-    void CbOpcode21();
-    void CbOpcode22();
-    void CbOpcode23();
-    void CbOpcode24();
-    void CbOpcode25();
-    void CbOpcode26();
-    void CbOpcode27();
-    void CbOpcode28();
-    void CbOpcode29();
-    void CbOpcode2A();
-    void CbOpcode2B();
-    void CbOpcode2C();
-    void CbOpcode2D();
-    void CbOpcode2E();
-    void CbOpcode2F();
+    void cbopcode20();
+    void cbopcode21();
+    void cbopcode22();
+    void cbopcode23();
+    void cbopcode24();
+    void cbopcode25();
+    void cbopcode26();
+    void cbopcode27();
+    void cbopcode28();
+    void cbopcode29();
+    void cbopcode2A();
+    void cbopcode2B();
+    void cbopcode2C();
+    void cbopcode2D();
+    void cbopcode2E();
+    void cbopcode2F();
 
-    void CbOpcode30();
-    void CbOpcode31();
-    void CbOpcode32();
-    void CbOpcode33();
-    void CbOpcode34();
-    void CbOpcode35();
-    void CbOpcode36();
-    void CbOpcode37();
-    void CbOpcode38();
-    void CbOpcode39();
-    void CbOpcode3A();
-    void CbOpcode3B();
-    void CbOpcode3C();
-    void CbOpcode3D();
-    void CbOpcode3E();
-    void CbOpcode3F();
+    void cbopcode30();
+    void cbopcode31();
+    void cbopcode32();
+    void cbopcode33();
+    void cbopcode34();
+    void cbopcode35();
+    void cbopcode36();
+    void cbopcode37();
+    void cbopcode38();
+    void cbopcode39();
+    void cbopcode3A();
+    void cbopcode3B();
+    void cbopcode3C();
+    void cbopcode3D();
+    void cbopcode3E();
+    void cbopcode3F();
 
-    void CbOpcode40();
-    void CbOpcode41();
-    void CbOpcode42();
-    void CbOpcode43();
-    void CbOpcode44();
-    void CbOpcode45();
-    void CbOpcode46();
-    void CbOpcode47();
-    void CbOpcode48();
-    void CbOpcode49();
-    void CbOpcode4A();
-    void CbOpcode4B();
-    void CbOpcode4C();
-    void CbOpcode4D();
-    void CbOpcode4E();
-    void CbOpcode4F();
+    void cbopcode40();
+    void cbopcode41();
+    void cbopcode42();
+    void cbopcode43();
+    void cbopcode44();
+    void cbopcode45();
+    void cbopcode46();
+    void cbopcode47();
+    void cbopcode48();
+    void cbopcode49();
+    void cbopcode4A();
+    void cbopcode4B();
+    void cbopcode4C();
+    void cbopcode4D();
+    void cbopcode4E();
+    void cbopcode4F();
 
-    void CbOpcode50();
-    void CbOpcode51();
-    void CbOpcode52();
-    void CbOpcode53();
-    void CbOpcode54();
-    void CbOpcode55();
-    void CbOpcode56();
-    void CbOpcode57();
-    void CbOpcode58();
-    void CbOpcode59();
-    void CbOpcode5A();
-    void CbOpcode5B();
-    void CbOpcode5C();
-    void CbOpcode5D();
-    void CbOpcode5E();
-    void CbOpcode5F();
+    void cbopcode50();
+    void cbopcode51();
+    void cbopcode52();
+    void cbopcode53();
+    void cbopcode54();
+    void cbopcode55();
+    void cbopcode56();
+    void cbopcode57();
+    void cbopcode58();
+    void cbopcode59();
+    void cbopcode5A();
+    void cbopcode5B();
+    void cbopcode5C();
+    void cbopcode5D();
+    void cbopcode5E();
+    void cbopcode5F();
 
-    void CbOpcode60();
-    void CbOpcode61();
-    void CbOpcode62();
-    void CbOpcode63();
-    void CbOpcode64();
-    void CbOpcode65();
-    void CbOpcode66();
-    void CbOpcode67();
-    void CbOpcode68();
-    void CbOpcode69();
-    void CbOpcode6A();
-    void CbOpcode6B();
-    void CbOpcode6C();
-    void CbOpcode6D();
-    void CbOpcode6E();
-    void CbOpcode6F();
+    void cbopcode60();
+    void cbopcode61();
+    void cbopcode62();
+    void cbopcode63();
+    void cbopcode64();
+    void cbopcode65();
+    void cbopcode66();
+    void cbopcode67();
+    void cbopcode68();
+    void cbopcode69();
+    void cbopcode6A();
+    void cbopcode6B();
+    void cbopcode6C();
+    void cbopcode6D();
+    void cbopcode6E();
+    void cbopcode6F();
 
-    void CbOpcode70();
-    void CbOpcode71();
-    void CbOpcode72();
-    void CbOpcode73();
-    void CbOpcode74();
-    void CbOpcode75();
-    void CbOpcode76();
-    void CbOpcode77();
-    void CbOpcode78();
-    void CbOpcode79();
-    void CbOpcode7A();
-    void CbOpcode7B();
-    void CbOpcode7C();
-    void CbOpcode7D();
-    void CbOpcode7E();
-    void CbOpcode7F();
+    void cbopcode70();
+    void cbopcode71();
+    void cbopcode72();
+    void cbopcode73();
+    void cbopcode74();
+    void cbopcode75();
+    void cbopcode76();
+    void cbopcode77();
+    void cbopcode78();
+    void cbopcode79();
+    void cbopcode7A();
+    void cbopcode7B();
+    void cbopcode7C();
+    void cbopcode7D();
+    void cbopcode7E();
+    void cbopcode7F();
 
-    void CbOpcode80();
-    void CbOpcode81();
-    void CbOpcode82();
-    void CbOpcode83();
-    void CbOpcode84();
-    void CbOpcode85();
-    void CbOpcode86();
-    void CbOpcode87();
-    void CbOpcode88();
-    void CbOpcode89();
-    void CbOpcode8A();
-    void CbOpcode8B();
-    void CbOpcode8C();
-    void CbOpcode8D();
-    void CbOpcode8E();
-    void CbOpcode8F();
+    void cbopcode80();
+    void cbopcode81();
+    void cbopcode82();
+    void cbopcode83();
+    void cbopcode84();
+    void cbopcode85();
+    void cbopcode86();
+    void cbopcode87();
+    void cbopcode88();
+    void cbopcode89();
+    void cbopcode8A();
+    void cbopcode8B();
+    void cbopcode8C();
+    void cbopcode8D();
+    void cbopcode8E();
+    void cbopcode8F();
 
-    void CbOpcode90();
-    void CbOpcode91();
-    void CbOpcode92();
-    void CbOpcode93();
-    void CbOpcode94();
-    void CbOpcode95();
-    void CbOpcode96();
-    void CbOpcode97();
-    void CbOpcode98();
-    void CbOpcode99();
-    void CbOpcode9A();
-    void CbOpcode9B();
-    void CbOpcode9C();
-    void CbOpcode9D();
-    void CbOpcode9E();
-    void CbOpcode9F();
+    void cbopcode90();
+    void cbopcode91();
+    void cbopcode92();
+    void cbopcode93();
+    void cbopcode94();
+    void cbopcode95();
+    void cbopcode96();
+    void cbopcode97();
+    void cbopcode98();
+    void cbopcode99();
+    void cbopcode9A();
+    void cbopcode9B();
+    void cbopcode9C();
+    void cbopcode9D();
+    void cbopcode9E();
+    void cbopcode9F();
 
-    void CbOpcodeA0();
-    void CbOpcodeA1();
-    void CbOpcodeA2();
-    void CbOpcodeA3();
-    void CbOpcodeA4();
-    void CbOpcodeA5();
-    void CbOpcodeA6();
-    void CbOpcodeA7();
-    void CbOpcodeA8();
-    void CbOpcodeA9();
-    void CbOpcodeAA();
-    void CbOpcodeAB();
-    void CbOpcodeAC();
-    void CbOpcodeAD();
-    void CbOpcodeAE();
-    void CbOpcodeAF();
+    void cbopcodeA0();
+    void cbopcodeA1();
+    void cbopcodeA2();
+    void cbopcodeA3();
+    void cbopcodeA4();
+    void cbopcodeA5();
+    void cbopcodeA6();
+    void cbopcodeA7();
+    void cbopcodeA8();
+    void cbopcodeA9();
+    void cbopcodeAA();
+    void cbopcodeAB();
+    void cbopcodeAC();
+    void cbopcodeAD();
+    void cbopcodeAE();
+    void cbopcodeAF();
 
-    void CbOpcodeB0();
-    void CbOpcodeB1();
-    void CbOpcodeB2();
-    void CbOpcodeB3();
-    void CbOpcodeB4();
-    void CbOpcodeB5();
-    void CbOpcodeB6();
-    void CbOpcodeB7();
-    void CbOpcodeB8();
-    void CbOpcodeB9();
-    void CbOpcodeBA();
-    void CbOpcodeBB();
-    void CbOpcodeBC();
-    void CbOpcodeBD();
-    void CbOpcodeBE();
-    void CbOpcodeBF();
+    void cbopcodeB0();
+    void cbopcodeB1();
+    void cbopcodeB2();
+    void cbopcodeB3();
+    void cbopcodeB4();
+    void cbopcodeB5();
+    void cbopcodeB6();
+    void cbopcodeB7();
+    void cbopcodeB8();
+    void cbopcodeB9();
+    void cbopcodeBA();
+    void cbopcodeBB();
+    void cbopcodeBC();
+    void cbopcodeBD();
+    void cbopcodeBE();
+    void cbopcodeBF();
 
-    void CbOpcodeC0();
-    void CbOpcodeC1();
-    void CbOpcodeC2();
-    void CbOpcodeC3();
-    void CbOpcodeC4();
-    void CbOpcodeC5();
-    void CbOpcodeC6();
-    void CbOpcodeC7();
-    void CbOpcodeC8();
-    void CbOpcodeC9();
-    void CbOpcodeCA();
-    void CbOpcodeCB();
-    void CbOpcodeCC();
-    void CbOpcodeCD();
-    void CbOpcodeCE();
-    void CbOpcodeCF();
+    void cbopcodeC0();
+    void cbopcodeC1();
+    void cbopcodeC2();
+    void cbopcodeC3();
+    void cbopcodeC4();
+    void cbopcodeC5();
+    void cbopcodeC6();
+    void cbopcodeC7();
+    void cbopcodeC8();
+    void cbopcodeC9();
+    void cbopcodeCA();
+    void cbopcodeCB();
+    void cbopcodeCC();
+    void cbopcodeCD();
+    void cbopcodeCE();
+    void cbopcodeCF();
 
-    void CbOpcodeD0();
-    void CbOpcodeD1();
-    void CbOpcodeD2();
-    void CbOpcodeD3();
-    void CbOpcodeD4();
-    void CbOpcodeD5();
-    void CbOpcodeD6();
-    void CbOpcodeD7();
-    void CbOpcodeD8();
-    void CbOpcodeD9();
-    void CbOpcodeDA();
-    void CbOpcodeDB();
-    void CbOpcodeDC();
-    void CbOpcodeDD();
-    void CbOpcodeDE();
-    void CbOpcodeDF();
+    void cbopcodeD0();
+    void cbopcodeD1();
+    void cbopcodeD2();
+    void cbopcodeD3();
+    void cbopcodeD4();
+    void cbopcodeD5();
+    void cbopcodeD6();
+    void cbopcodeD7();
+    void cbopcodeD8();
+    void cbopcodeD9();
+    void cbopcodeDA();
+    void cbopcodeDB();
+    void cbopcodeDC();
+    void cbopcodeDD();
+    void cbopcodeDE();
+    void cbopcodeDF();
 
-    void CbOpcodeE0();
-    void CbOpcodeE1();
-    void CbOpcodeE2();
-    void CbOpcodeE3();
-    void CbOpcodeE4();
-    void CbOpcodeE5();
-    void CbOpcodeE6();
-    void CbOpcodeE7();
-    void CbOpcodeE8();
-    void CbOpcodeE9();
-    void CbOpcodeEA();
-    void CbOpcodeEB();
-    void CbOpcodeEC();
-    void CbOpcodeED();
-    void CbOpcodeEE();
-    void CbOpcodeEF();
+    void cbopcodeE0();
+    void cbopcodeE1();
+    void cbopcodeE2();
+    void cbopcodeE3();
+    void cbopcodeE4();
+    void cbopcodeE5();
+    void cbopcodeE6();
+    void cbopcodeE7();
+    void cbopcodeE8();
+    void cbopcodeE9();
+    void cbopcodeEA();
+    void cbopcodeEB();
+    void cbopcodeEC();
+    void cbopcodeED();
+    void cbopcodeEE();
+    void cbopcodeEF();
 
-    void CbOpcodeF0();
-    void CbOpcodeF1();
-    void CbOpcodeF2();
-    void CbOpcodeF3();
-    void CbOpcodeF4();
-    void CbOpcodeF5();
-    void CbOpcodeF6();
-    void CbOpcodeF7();
-    void CbOpcodeF8();
-    void CbOpcodeF9();
-    void CbOpcodeFA();
-    void CbOpcodeFB();
-    void CbOpcodeFC();
-    void CbOpcodeFD();
-    void CbOpcodeFE();
-    void CbOpcodeFF();
+    void cbopcodeF0();
+    void cbopcodeF1();
+    void cbopcodeF2();
+    void cbopcodeF3();
+    void cbopcodeF4();
+    void cbopcodeF5();
+    void cbopcodeF6();
+    void cbopcodeF7();
+    void cbopcodeF8();
+    void cbopcodeF9();
+    void cbopcodeFA();
+    void cbopcodeFB();
+    void cbopcodeFC();
+    void cbopcodeFD();
+    void cbopcodeFE();
+    void cbopcodeFF();
 
     const CPUFn opcodes[256] = {
-        &CPU::Opcode00, &CPU::Opcode01, &CPU::Opcode02, &CPU::Opcode03,
-        &CPU::Opcode04, &CPU::Opcode05, &CPU::Opcode06, &CPU::Opcode07,
-        &CPU::Opcode08, &CPU::Opcode09, &CPU::Opcode0A, &CPU::Opcode0B,
-        &CPU::Opcode0C, &CPU::Opcode0D, &CPU::Opcode0E, &CPU::Opcode0F,
+        &CPU::opcode00, &CPU::opcode01, &CPU::opcode02, &CPU::opcode03,
+        &CPU::opcode04, &CPU::opcode05, &CPU::opcode06, &CPU::opcode07,
+        &CPU::opcode08, &CPU::opcode09, &CPU::opcode0A, &CPU::opcode0B,
+        &CPU::opcode0C, &CPU::opcode0D, &CPU::opcode0E, &CPU::opcode0F,
 
-        &CPU::Opcode10, &CPU::Opcode11, &CPU::Opcode12, &CPU::Opcode13,
-        &CPU::Opcode14, &CPU::Opcode15, &CPU::Opcode16, &CPU::Opcode17,
-        &CPU::Opcode18, &CPU::Opcode19, &CPU::Opcode1A, &CPU::Opcode1B,
-        &CPU::Opcode1C, &CPU::Opcode1D, &CPU::Opcode1E, &CPU::Opcode1F,
+        &CPU::opcode10, &CPU::opcode11, &CPU::opcode12, &CPU::opcode13,
+        &CPU::opcode14, &CPU::opcode15, &CPU::opcode16, &CPU::opcode17,
+        &CPU::opcode18, &CPU::opcode19, &CPU::opcode1A, &CPU::opcode1B,
+        &CPU::opcode1C, &CPU::opcode1D, &CPU::opcode1E, &CPU::opcode1F,
 
-        &CPU::Opcode20, &CPU::Opcode21, &CPU::Opcode22, &CPU::Opcode23,
-        &CPU::Opcode24, &CPU::Opcode25, &CPU::Opcode26, &CPU::Opcode27,
-        &CPU::Opcode28, &CPU::Opcode29, &CPU::Opcode2A, &CPU::Opcode2B,
-        &CPU::Opcode2C, &CPU::Opcode2D, &CPU::Opcode2E, &CPU::Opcode2F,
+        &CPU::opcode20, &CPU::opcode21, &CPU::opcode22, &CPU::opcode23,
+        &CPU::opcode24, &CPU::opcode25, &CPU::opcode26, &CPU::opcode27,
+        &CPU::opcode28, &CPU::opcode29, &CPU::opcode2A, &CPU::opcode2B,
+        &CPU::opcode2C, &CPU::opcode2D, &CPU::opcode2E, &CPU::opcode2F,
 
-        &CPU::Opcode30, &CPU::Opcode31, &CPU::Opcode32, &CPU::Opcode33,
-        &CPU::Opcode34, &CPU::Opcode35, &CPU::Opcode36, &CPU::Opcode37,
-        &CPU::Opcode38, &CPU::Opcode39, &CPU::Opcode3A, &CPU::Opcode3B,
-        &CPU::Opcode3C, &CPU::Opcode3D, &CPU::Opcode3E, &CPU::Opcode3F,
+        &CPU::opcode30, &CPU::opcode31, &CPU::opcode32, &CPU::opcode33,
+        &CPU::opcode34, &CPU::opcode35, &CPU::opcode36, &CPU::opcode37,
+        &CPU::opcode38, &CPU::opcode39, &CPU::opcode3A, &CPU::opcode3B,
+        &CPU::opcode3C, &CPU::opcode3D, &CPU::opcode3E, &CPU::opcode3F,
 
-        &CPU::Opcode40, &CPU::Opcode41, &CPU::Opcode42, &CPU::Opcode43,
-        &CPU::Opcode44, &CPU::Opcode45, &CPU::Opcode46, &CPU::Opcode47,
-        &CPU::Opcode48, &CPU::Opcode49, &CPU::Opcode4A, &CPU::Opcode4B,
-        &CPU::Opcode4C, &CPU::Opcode4D, &CPU::Opcode4E, &CPU::Opcode4F,
+        &CPU::opcode40, &CPU::opcode41, &CPU::opcode42, &CPU::opcode43,
+        &CPU::opcode44, &CPU::opcode45, &CPU::opcode46, &CPU::opcode47,
+        &CPU::opcode48, &CPU::opcode49, &CPU::opcode4A, &CPU::opcode4B,
+        &CPU::opcode4C, &CPU::opcode4D, &CPU::opcode4E, &CPU::opcode4F,
 
-        &CPU::Opcode50, &CPU::Opcode51, &CPU::Opcode52, &CPU::Opcode53,
-        &CPU::Opcode54, &CPU::Opcode55, &CPU::Opcode56, &CPU::Opcode57,
-        &CPU::Opcode58, &CPU::Opcode59, &CPU::Opcode5A, &CPU::Opcode5B,
-        &CPU::Opcode5C, &CPU::Opcode5D, &CPU::Opcode5E, &CPU::Opcode5F,
+        &CPU::opcode50, &CPU::opcode51, &CPU::opcode52, &CPU::opcode53,
+        &CPU::opcode54, &CPU::opcode55, &CPU::opcode56, &CPU::opcode57,
+        &CPU::opcode58, &CPU::opcode59, &CPU::opcode5A, &CPU::opcode5B,
+        &CPU::opcode5C, &CPU::opcode5D, &CPU::opcode5E, &CPU::opcode5F,
 
-        &CPU::Opcode60, &CPU::Opcode61, &CPU::Opcode62, &CPU::Opcode63,
-        &CPU::Opcode64, &CPU::Opcode65, &CPU::Opcode66, &CPU::Opcode67,
-        &CPU::Opcode68, &CPU::Opcode69, &CPU::Opcode6A, &CPU::Opcode6B,
-        &CPU::Opcode6C, &CPU::Opcode6D, &CPU::Opcode6E, &CPU::Opcode6F,
+        &CPU::opcode60, &CPU::opcode61, &CPU::opcode62, &CPU::opcode63,
+        &CPU::opcode64, &CPU::opcode65, &CPU::opcode66, &CPU::opcode67,
+        &CPU::opcode68, &CPU::opcode69, &CPU::opcode6A, &CPU::opcode6B,
+        &CPU::opcode6C, &CPU::opcode6D, &CPU::opcode6E, &CPU::opcode6F,
 
-        &CPU::Opcode70, &CPU::Opcode71, &CPU::Opcode72, &CPU::Opcode73,
-        &CPU::Opcode74, &CPU::Opcode75, &CPU::Opcode76, &CPU::Opcode77,
-        &CPU::Opcode78, &CPU::Opcode79, &CPU::Opcode7A, &CPU::Opcode7B,
-        &CPU::Opcode7C, &CPU::Opcode7D, &CPU::Opcode7E, &CPU::Opcode7F,
+        &CPU::opcode70, &CPU::opcode71, &CPU::opcode72, &CPU::opcode73,
+        &CPU::opcode74, &CPU::opcode75, &CPU::opcode76, &CPU::opcode77,
+        &CPU::opcode78, &CPU::opcode79, &CPU::opcode7A, &CPU::opcode7B,
+        &CPU::opcode7C, &CPU::opcode7D, &CPU::opcode7E, &CPU::opcode7F,
 
-        &CPU::Opcode80, &CPU::Opcode81, &CPU::Opcode82, &CPU::Opcode83,
-        &CPU::Opcode84, &CPU::Opcode85, &CPU::Opcode86, &CPU::Opcode87,
-        &CPU::Opcode88, &CPU::Opcode89, &CPU::Opcode8A, &CPU::Opcode8B,
-        &CPU::Opcode8C, &CPU::Opcode8D, &CPU::Opcode8E, &CPU::Opcode8F,
+        &CPU::opcode80, &CPU::opcode81, &CPU::opcode82, &CPU::opcode83,
+        &CPU::opcode84, &CPU::opcode85, &CPU::opcode86, &CPU::opcode87,
+        &CPU::opcode88, &CPU::opcode89, &CPU::opcode8A, &CPU::opcode8B,
+        &CPU::opcode8C, &CPU::opcode8D, &CPU::opcode8E, &CPU::opcode8F,
 
-        &CPU::Opcode90, &CPU::Opcode91, &CPU::Opcode92, &CPU::Opcode93,
-        &CPU::Opcode94, &CPU::Opcode95, &CPU::Opcode96, &CPU::Opcode97,
-        &CPU::Opcode98, &CPU::Opcode99, &CPU::Opcode9A, &CPU::Opcode9B,
-        &CPU::Opcode9C, &CPU::Opcode9D, &CPU::Opcode9E, &CPU::Opcode9F,
+        &CPU::opcode90, &CPU::opcode91, &CPU::opcode92, &CPU::opcode93,
+        &CPU::opcode94, &CPU::opcode95, &CPU::opcode96, &CPU::opcode97,
+        &CPU::opcode98, &CPU::opcode99, &CPU::opcode9A, &CPU::opcode9B,
+        &CPU::opcode9C, &CPU::opcode9D, &CPU::opcode9E, &CPU::opcode9F,
 
-        &CPU::OpcodeA0, &CPU::OpcodeA1, &CPU::OpcodeA2, &CPU::OpcodeA3,
-        &CPU::OpcodeA4, &CPU::OpcodeA5, &CPU::OpcodeA6, &CPU::OpcodeA7,
-        &CPU::OpcodeA8, &CPU::OpcodeA9, &CPU::OpcodeAA, &CPU::OpcodeAB,
-        &CPU::OpcodeAC, &CPU::OpcodeAD, &CPU::OpcodeAE, &CPU::OpcodeAF,
+        &CPU::opcodeA0, &CPU::opcodeA1, &CPU::opcodeA2, &CPU::opcodeA3,
+        &CPU::opcodeA4, &CPU::opcodeA5, &CPU::opcodeA6, &CPU::opcodeA7,
+        &CPU::opcodeA8, &CPU::opcodeA9, &CPU::opcodeAA, &CPU::opcodeAB,
+        &CPU::opcodeAC, &CPU::opcodeAD, &CPU::opcodeAE, &CPU::opcodeAF,
 
-        &CPU::OpcodeB0, &CPU::OpcodeB1, &CPU::OpcodeB2, &CPU::OpcodeB3,
-        &CPU::OpcodeB4, &CPU::OpcodeB5, &CPU::OpcodeB6, &CPU::OpcodeB7,
-        &CPU::OpcodeB8, &CPU::OpcodeB9, &CPU::OpcodeBA, &CPU::OpcodeBB,
-        &CPU::OpcodeBC, &CPU::OpcodeBD, &CPU::OpcodeBE, &CPU::OpcodeBF,
+        &CPU::opcodeB0, &CPU::opcodeB1, &CPU::opcodeB2, &CPU::opcodeB3,
+        &CPU::opcodeB4, &CPU::opcodeB5, &CPU::opcodeB6, &CPU::opcodeB7,
+        &CPU::opcodeB8, &CPU::opcodeB9, &CPU::opcodeBA, &CPU::opcodeBB,
+        &CPU::opcodeBC, &CPU::opcodeBD, &CPU::opcodeBE, &CPU::opcodeBF,
 
-        &CPU::OpcodeC0, &CPU::OpcodeC1, &CPU::OpcodeC2, &CPU::OpcodeC3,
-        &CPU::OpcodeC4, &CPU::OpcodeC5, &CPU::OpcodeC6, &CPU::OpcodeC7,
-        &CPU::OpcodeC8, &CPU::OpcodeC9, &CPU::OpcodeCA, &CPU::OpcodeCB,
-        &CPU::OpcodeCC, &CPU::OpcodeCD, &CPU::OpcodeCE, &CPU::OpcodeCF,
+        &CPU::opcodeC0, &CPU::opcodeC1, &CPU::opcodeC2, &CPU::opcodeC3,
+        &CPU::opcodeC4, &CPU::opcodeC5, &CPU::opcodeC6, &CPU::opcodeC7,
+        &CPU::opcodeC8, &CPU::opcodeC9, &CPU::opcodeCA, &CPU::opcodeCB,
+        &CPU::opcodeCC, &CPU::opcodeCD, &CPU::opcodeCE, &CPU::opcodeCF,
 
-        &CPU::OpcodeD0, &CPU::OpcodeD1, &CPU::OpcodeD2, &CPU::OpcodeD3,
-        &CPU::OpcodeD4, &CPU::OpcodeD5, &CPU::OpcodeD6, &CPU::OpcodeD7,
-        &CPU::OpcodeD8, &CPU::OpcodeD9, &CPU::OpcodeDA, &CPU::OpcodeDB,
-        &CPU::OpcodeDC, &CPU::OpcodeDD, &CPU::OpcodeDE, &CPU::OpcodeDF,
+        &CPU::opcodeD0, &CPU::opcodeD1, &CPU::opcodeD2, &CPU::opcodeD3,
+        &CPU::opcodeD4, &CPU::opcodeD5, &CPU::opcodeD6, &CPU::opcodeD7,
+        &CPU::opcodeD8, &CPU::opcodeD9, &CPU::opcodeDA, &CPU::opcodeDB,
+        &CPU::opcodeDC, &CPU::opcodeDD, &CPU::opcodeDE, &CPU::opcodeDF,
 
-        &CPU::OpcodeE0, &CPU::OpcodeE1, &CPU::OpcodeE2, &CPU::OpcodeE3,
-        &CPU::OpcodeE4, &CPU::OpcodeE5, &CPU::OpcodeE6, &CPU::OpcodeE7,
-        &CPU::OpcodeE8, &CPU::OpcodeE9, &CPU::OpcodeEA, &CPU::OpcodeEB,
-        &CPU::OpcodeEC, &CPU::OpcodeED, &CPU::OpcodeEE, &CPU::OpcodeEF,
+        &CPU::opcodeE0, &CPU::opcodeE1, &CPU::opcodeE2, &CPU::opcodeE3,
+        &CPU::opcodeE4, &CPU::opcodeE5, &CPU::opcodeE6, &CPU::opcodeE7,
+        &CPU::opcodeE8, &CPU::opcodeE9, &CPU::opcodeEA, &CPU::opcodeEB,
+        &CPU::opcodeEC, &CPU::opcodeED, &CPU::opcodeEE, &CPU::opcodeEF,
 
-        &CPU::OpcodeF0, &CPU::OpcodeF1, &CPU::OpcodeF2, &CPU::OpcodeF3,
-        &CPU::OpcodeF4, &CPU::OpcodeF5, &CPU::OpcodeF6, &CPU::OpcodeF7,
-        &CPU::OpcodeF8, &CPU::OpcodeF9, &CPU::OpcodeFA, &CPU::OpcodeFB,
-        &CPU::OpcodeFC, &CPU::OpcodeFD, &CPU::OpcodeFE, &CPU::OpcodeFF};
+        &CPU::opcodeF0, &CPU::opcodeF1, &CPU::opcodeF2, &CPU::opcodeF3,
+        &CPU::opcodeF4, &CPU::opcodeF5, &CPU::opcodeF6, &CPU::opcodeF7,
+        &CPU::opcodeF8, &CPU::opcodeF9, &CPU::opcodeFA, &CPU::opcodeFB,
+        &CPU::opcodeFC, &CPU::opcodeFD, &CPU::opcodeFE, &CPU::opcodeFF};
     const CPUFn cb_opcodes[256] = {
-        &CPU::CbOpcode00, &CPU::CbOpcode01, &CPU::CbOpcode02, &CPU::CbOpcode03,
-        &CPU::CbOpcode04, &CPU::CbOpcode05, &CPU::CbOpcode06, &CPU::CbOpcode07,
-        &CPU::CbOpcode08, &CPU::CbOpcode09, &CPU::CbOpcode0A, &CPU::CbOpcode0B,
-        &CPU::CbOpcode0C, &CPU::CbOpcode0D, &CPU::CbOpcode0E, &CPU::CbOpcode0F,
+        &CPU::cbopcode00, &CPU::cbopcode01, &CPU::cbopcode02, &CPU::cbopcode03,
+        &CPU::cbopcode04, &CPU::cbopcode05, &CPU::cbopcode06, &CPU::cbopcode07,
+        &CPU::cbopcode08, &CPU::cbopcode09, &CPU::cbopcode0A, &CPU::cbopcode0B,
+        &CPU::cbopcode0C, &CPU::cbopcode0D, &CPU::cbopcode0E, &CPU::cbopcode0F,
 
-        &CPU::CbOpcode10, &CPU::CbOpcode11, &CPU::CbOpcode12, &CPU::CbOpcode13,
-        &CPU::CbOpcode14, &CPU::CbOpcode15, &CPU::CbOpcode16, &CPU::CbOpcode17,
-        &CPU::CbOpcode18, &CPU::CbOpcode19, &CPU::CbOpcode1A, &CPU::CbOpcode1B,
-        &CPU::CbOpcode1C, &CPU::CbOpcode1D, &CPU::CbOpcode1E, &CPU::CbOpcode1F,
+        &CPU::cbopcode10, &CPU::cbopcode11, &CPU::cbopcode12, &CPU::cbopcode13,
+        &CPU::cbopcode14, &CPU::cbopcode15, &CPU::cbopcode16, &CPU::cbopcode17,
+        &CPU::cbopcode18, &CPU::cbopcode19, &CPU::cbopcode1A, &CPU::cbopcode1B,
+        &CPU::cbopcode1C, &CPU::cbopcode1D, &CPU::cbopcode1E, &CPU::cbopcode1F,
 
-        &CPU::CbOpcode20, &CPU::CbOpcode21, &CPU::CbOpcode22, &CPU::CbOpcode23,
-        &CPU::CbOpcode24, &CPU::CbOpcode25, &CPU::CbOpcode26, &CPU::CbOpcode27,
-        &CPU::CbOpcode28, &CPU::CbOpcode29, &CPU::CbOpcode2A, &CPU::CbOpcode2B,
-        &CPU::CbOpcode2C, &CPU::CbOpcode2D, &CPU::CbOpcode2E, &CPU::CbOpcode2F,
+        &CPU::cbopcode20, &CPU::cbopcode21, &CPU::cbopcode22, &CPU::cbopcode23,
+        &CPU::cbopcode24, &CPU::cbopcode25, &CPU::cbopcode26, &CPU::cbopcode27,
+        &CPU::cbopcode28, &CPU::cbopcode29, &CPU::cbopcode2A, &CPU::cbopcode2B,
+        &CPU::cbopcode2C, &CPU::cbopcode2D, &CPU::cbopcode2E, &CPU::cbopcode2F,
 
-        &CPU::CbOpcode30, &CPU::CbOpcode31, &CPU::CbOpcode32, &CPU::CbOpcode33,
-        &CPU::CbOpcode34, &CPU::CbOpcode35, &CPU::CbOpcode36, &CPU::CbOpcode37,
-        &CPU::CbOpcode38, &CPU::CbOpcode39, &CPU::CbOpcode3A, &CPU::CbOpcode3B,
-        &CPU::CbOpcode3C, &CPU::CbOpcode3D, &CPU::CbOpcode3E, &CPU::CbOpcode3F,
+        &CPU::cbopcode30, &CPU::cbopcode31, &CPU::cbopcode32, &CPU::cbopcode33,
+        &CPU::cbopcode34, &CPU::cbopcode35, &CPU::cbopcode36, &CPU::cbopcode37,
+        &CPU::cbopcode38, &CPU::cbopcode39, &CPU::cbopcode3A, &CPU::cbopcode3B,
+        &CPU::cbopcode3C, &CPU::cbopcode3D, &CPU::cbopcode3E, &CPU::cbopcode3F,
 
-        &CPU::CbOpcode40, &CPU::CbOpcode41, &CPU::CbOpcode42, &CPU::CbOpcode43,
-        &CPU::CbOpcode44, &CPU::CbOpcode45, &CPU::CbOpcode46, &CPU::CbOpcode47,
-        &CPU::CbOpcode48, &CPU::CbOpcode49, &CPU::CbOpcode4A, &CPU::CbOpcode4B,
-        &CPU::CbOpcode4C, &CPU::CbOpcode4D, &CPU::CbOpcode4E, &CPU::CbOpcode4F,
+        &CPU::cbopcode40, &CPU::cbopcode41, &CPU::cbopcode42, &CPU::cbopcode43,
+        &CPU::cbopcode44, &CPU::cbopcode45, &CPU::cbopcode46, &CPU::cbopcode47,
+        &CPU::cbopcode48, &CPU::cbopcode49, &CPU::cbopcode4A, &CPU::cbopcode4B,
+        &CPU::cbopcode4C, &CPU::cbopcode4D, &CPU::cbopcode4E, &CPU::cbopcode4F,
 
-        &CPU::CbOpcode50, &CPU::CbOpcode51, &CPU::CbOpcode52, &CPU::CbOpcode53,
-        &CPU::CbOpcode54, &CPU::CbOpcode55, &CPU::CbOpcode56, &CPU::CbOpcode57,
-        &CPU::CbOpcode58, &CPU::CbOpcode59, &CPU::CbOpcode5A, &CPU::CbOpcode5B,
-        &CPU::CbOpcode5C, &CPU::CbOpcode5D, &CPU::CbOpcode5E, &CPU::CbOpcode5F,
+        &CPU::cbopcode50, &CPU::cbopcode51, &CPU::cbopcode52, &CPU::cbopcode53,
+        &CPU::cbopcode54, &CPU::cbopcode55, &CPU::cbopcode56, &CPU::cbopcode57,
+        &CPU::cbopcode58, &CPU::cbopcode59, &CPU::cbopcode5A, &CPU::cbopcode5B,
+        &CPU::cbopcode5C, &CPU::cbopcode5D, &CPU::cbopcode5E, &CPU::cbopcode5F,
 
-        &CPU::CbOpcode60, &CPU::CbOpcode61, &CPU::CbOpcode62, &CPU::CbOpcode63,
-        &CPU::CbOpcode64, &CPU::CbOpcode65, &CPU::CbOpcode66, &CPU::CbOpcode67,
-        &CPU::CbOpcode68, &CPU::CbOpcode69, &CPU::CbOpcode6A, &CPU::CbOpcode6B,
-        &CPU::CbOpcode6C, &CPU::CbOpcode6D, &CPU::CbOpcode6E, &CPU::CbOpcode6F,
+        &CPU::cbopcode60, &CPU::cbopcode61, &CPU::cbopcode62, &CPU::cbopcode63,
+        &CPU::cbopcode64, &CPU::cbopcode65, &CPU::cbopcode66, &CPU::cbopcode67,
+        &CPU::cbopcode68, &CPU::cbopcode69, &CPU::cbopcode6A, &CPU::cbopcode6B,
+        &CPU::cbopcode6C, &CPU::cbopcode6D, &CPU::cbopcode6E, &CPU::cbopcode6F,
 
-        &CPU::CbOpcode70, &CPU::CbOpcode71, &CPU::CbOpcode72, &CPU::CbOpcode73,
-        &CPU::CbOpcode74, &CPU::CbOpcode75, &CPU::CbOpcode76, &CPU::CbOpcode77,
-        &CPU::CbOpcode78, &CPU::CbOpcode79, &CPU::CbOpcode7A, &CPU::CbOpcode7B,
-        &CPU::CbOpcode7C, &CPU::CbOpcode7D, &CPU::CbOpcode7E, &CPU::CbOpcode7F,
+        &CPU::cbopcode70, &CPU::cbopcode71, &CPU::cbopcode72, &CPU::cbopcode73,
+        &CPU::cbopcode74, &CPU::cbopcode75, &CPU::cbopcode76, &CPU::cbopcode77,
+        &CPU::cbopcode78, &CPU::cbopcode79, &CPU::cbopcode7A, &CPU::cbopcode7B,
+        &CPU::cbopcode7C, &CPU::cbopcode7D, &CPU::cbopcode7E, &CPU::cbopcode7F,
 
-        &CPU::CbOpcode80, &CPU::CbOpcode81, &CPU::CbOpcode82, &CPU::CbOpcode83,
-        &CPU::CbOpcode84, &CPU::CbOpcode85, &CPU::CbOpcode86, &CPU::CbOpcode87,
-        &CPU::CbOpcode88, &CPU::CbOpcode89, &CPU::CbOpcode8A, &CPU::CbOpcode8B,
-        &CPU::CbOpcode8C, &CPU::CbOpcode8D, &CPU::CbOpcode8E, &CPU::CbOpcode8F,
+        &CPU::cbopcode80, &CPU::cbopcode81, &CPU::cbopcode82, &CPU::cbopcode83,
+        &CPU::cbopcode84, &CPU::cbopcode85, &CPU::cbopcode86, &CPU::cbopcode87,
+        &CPU::cbopcode88, &CPU::cbopcode89, &CPU::cbopcode8A, &CPU::cbopcode8B,
+        &CPU::cbopcode8C, &CPU::cbopcode8D, &CPU::cbopcode8E, &CPU::cbopcode8F,
 
-        &CPU::CbOpcode90, &CPU::CbOpcode91, &CPU::CbOpcode92, &CPU::CbOpcode93,
-        &CPU::CbOpcode94, &CPU::CbOpcode95, &CPU::CbOpcode96, &CPU::CbOpcode97,
-        &CPU::CbOpcode98, &CPU::CbOpcode99, &CPU::CbOpcode9A, &CPU::CbOpcode9B,
-        &CPU::CbOpcode9C, &CPU::CbOpcode9D, &CPU::CbOpcode9E, &CPU::CbOpcode9F,
+        &CPU::cbopcode90, &CPU::cbopcode91, &CPU::cbopcode92, &CPU::cbopcode93,
+        &CPU::cbopcode94, &CPU::cbopcode95, &CPU::cbopcode96, &CPU::cbopcode97,
+        &CPU::cbopcode98, &CPU::cbopcode99, &CPU::cbopcode9A, &CPU::cbopcode9B,
+        &CPU::cbopcode9C, &CPU::cbopcode9D, &CPU::cbopcode9E, &CPU::cbopcode9F,
 
-        &CPU::CbOpcodeA0, &CPU::CbOpcodeA1, &CPU::CbOpcodeA2, &CPU::CbOpcodeA3,
-        &CPU::CbOpcodeA4, &CPU::CbOpcodeA5, &CPU::CbOpcodeA6, &CPU::CbOpcodeA7,
-        &CPU::CbOpcodeA8, &CPU::CbOpcodeA9, &CPU::CbOpcodeAA, &CPU::CbOpcodeAB,
-        &CPU::CbOpcodeAC, &CPU::CbOpcodeAD, &CPU::CbOpcodeAE, &CPU::CbOpcodeAF,
+        &CPU::cbopcodeA0, &CPU::cbopcodeA1, &CPU::cbopcodeA2, &CPU::cbopcodeA3,
+        &CPU::cbopcodeA4, &CPU::cbopcodeA5, &CPU::cbopcodeA6, &CPU::cbopcodeA7,
+        &CPU::cbopcodeA8, &CPU::cbopcodeA9, &CPU::cbopcodeAA, &CPU::cbopcodeAB,
+        &CPU::cbopcodeAC, &CPU::cbopcodeAD, &CPU::cbopcodeAE, &CPU::cbopcodeAF,
 
-        &CPU::CbOpcodeB0, &CPU::CbOpcodeB1, &CPU::CbOpcodeB2, &CPU::CbOpcodeB3,
-        &CPU::CbOpcodeB4, &CPU::CbOpcodeB5, &CPU::CbOpcodeB6, &CPU::CbOpcodeB7,
-        &CPU::CbOpcodeB8, &CPU::CbOpcodeB9, &CPU::CbOpcodeBA, &CPU::CbOpcodeBB,
-        &CPU::CbOpcodeBC, &CPU::CbOpcodeBD, &CPU::CbOpcodeBE, &CPU::CbOpcodeBF,
+        &CPU::cbopcodeB0, &CPU::cbopcodeB1, &CPU::cbopcodeB2, &CPU::cbopcodeB3,
+        &CPU::cbopcodeB4, &CPU::cbopcodeB5, &CPU::cbopcodeB6, &CPU::cbopcodeB7,
+        &CPU::cbopcodeB8, &CPU::cbopcodeB9, &CPU::cbopcodeBA, &CPU::cbopcodeBB,
+        &CPU::cbopcodeBC, &CPU::cbopcodeBD, &CPU::cbopcodeBE, &CPU::cbopcodeBF,
 
-        &CPU::CbOpcodeC0, &CPU::CbOpcodeC1, &CPU::CbOpcodeC2, &CPU::CbOpcodeC3,
-        &CPU::CbOpcodeC4, &CPU::CbOpcodeC5, &CPU::CbOpcodeC6, &CPU::CbOpcodeC7,
-        &CPU::CbOpcodeC8, &CPU::CbOpcodeC9, &CPU::CbOpcodeCA, &CPU::CbOpcodeCB,
-        &CPU::CbOpcodeCC, &CPU::CbOpcodeCD, &CPU::CbOpcodeCE, &CPU::CbOpcodeCF,
+        &CPU::cbopcodeC0, &CPU::cbopcodeC1, &CPU::cbopcodeC2, &CPU::cbopcodeC3,
+        &CPU::cbopcodeC4, &CPU::cbopcodeC5, &CPU::cbopcodeC6, &CPU::cbopcodeC7,
+        &CPU::cbopcodeC8, &CPU::cbopcodeC9, &CPU::cbopcodeCA, &CPU::cbopcodeCB,
+        &CPU::cbopcodeCC, &CPU::cbopcodeCD, &CPU::cbopcodeCE, &CPU::cbopcodeCF,
 
-        &CPU::CbOpcodeD0, &CPU::CbOpcodeD1, &CPU::CbOpcodeD2, &CPU::CbOpcodeD3,
-        &CPU::CbOpcodeD4, &CPU::CbOpcodeD5, &CPU::CbOpcodeD6, &CPU::CbOpcodeD7,
-        &CPU::CbOpcodeD8, &CPU::CbOpcodeD9, &CPU::CbOpcodeDA, &CPU::CbOpcodeDB,
-        &CPU::CbOpcodeDC, &CPU::CbOpcodeDD, &CPU::CbOpcodeDE, &CPU::CbOpcodeDF,
+        &CPU::cbopcodeD0, &CPU::cbopcodeD1, &CPU::cbopcodeD2, &CPU::cbopcodeD3,
+        &CPU::cbopcodeD4, &CPU::cbopcodeD5, &CPU::cbopcodeD6, &CPU::cbopcodeD7,
+        &CPU::cbopcodeD8, &CPU::cbopcodeD9, &CPU::cbopcodeDA, &CPU::cbopcodeDB,
+        &CPU::cbopcodeDC, &CPU::cbopcodeDD, &CPU::cbopcodeDE, &CPU::cbopcodeDF,
 
-        &CPU::CbOpcodeE0, &CPU::CbOpcodeE1, &CPU::CbOpcodeE2, &CPU::CbOpcodeE3,
-        &CPU::CbOpcodeE4, &CPU::CbOpcodeE5, &CPU::CbOpcodeE6, &CPU::CbOpcodeE7,
-        &CPU::CbOpcodeE8, &CPU::CbOpcodeE9, &CPU::CbOpcodeEA, &CPU::CbOpcodeEB,
-        &CPU::CbOpcodeEC, &CPU::CbOpcodeED, &CPU::CbOpcodeEE, &CPU::CbOpcodeEF,
+        &CPU::cbopcodeE0, &CPU::cbopcodeE1, &CPU::cbopcodeE2, &CPU::cbopcodeE3,
+        &CPU::cbopcodeE4, &CPU::cbopcodeE5, &CPU::cbopcodeE6, &CPU::cbopcodeE7,
+        &CPU::cbopcodeE8, &CPU::cbopcodeE9, &CPU::cbopcodeEA, &CPU::cbopcodeEB,
+        &CPU::cbopcodeEC, &CPU::cbopcodeED, &CPU::cbopcodeEE, &CPU::cbopcodeEF,
 
-        &CPU::CbOpcodeF0, &CPU::CbOpcodeF1, &CPU::CbOpcodeF2, &CPU::CbOpcodeF3,
-        &CPU::CbOpcodeF4, &CPU::CbOpcodeF5, &CPU::CbOpcodeF6, &CPU::CbOpcodeF7,
-        &CPU::CbOpcodeF8, &CPU::CbOpcodeF9, &CPU::CbOpcodeFA, &CPU::CbOpcodeFB,
-        &CPU::CbOpcodeFC, &CPU::CbOpcodeFD, &CPU::CbOpcodeFE, &CPU::CbOpcodeFF};
+        &CPU::cbopcodeF0, &CPU::cbopcodeF1, &CPU::cbopcodeF2, &CPU::cbopcodeF3,
+        &CPU::cbopcodeF4, &CPU::cbopcodeF5, &CPU::cbopcodeF6, &CPU::cbopcodeF7,
+        &CPU::cbopcodeF8, &CPU::cbopcodeF9, &CPU::cbopcodeFA, &CPU::cbopcodeFB,
+        &CPU::cbopcodeFC, &CPU::cbopcodeFD, &CPU::cbopcodeFE, &CPU::cbopcodeFF};
 };

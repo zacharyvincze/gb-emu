@@ -12,5 +12,6 @@ int main(int argc, char **argv) {
     Cartridge cartridge(argv[2]);
     MMU mmu(cartridge, argv[1]);
     CPU cpu(mmu);
+
     return 0;
 }

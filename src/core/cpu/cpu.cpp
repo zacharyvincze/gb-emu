@@ -21,9 +21,32 @@ CPU::CPU(MMU& mmu) : af(a, f), bc(b, c), de(d, e), hl(h, l), mmu(mmu) {
     f.reset();
 
     (this->*opcodes[0])();
+    running = true;
 }
 
 CPU::~CPU() { spdlog::info("Cleaning CPU module"); }
+
+void CPU::init() {
+    running = true;
+    while (running) {
+        uint8_t opcode = getNextByte();
+        if (opcode == 0xCB) {
+            (this->*cb_opcodes[getNextByte()])();
+        } else {
+            (this->*opcodes[opcode])();
+        }
+    }
+}
+
+uint8_t CPU::getNextByte() {
+    uint8_t opcode = mmu.read(pc.value);
+    pc.inc();
+    return opcode;
+}
+
+uint16_t CPU::getNextWord() {
+    return static_cast<uint16_t>(getNextByte() | (getNextByte() << 8));
+}
 
 void CPU::GetCPUInformation() {
     printf(
