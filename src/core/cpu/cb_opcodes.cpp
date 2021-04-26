@@ -136,138 +136,138 @@ void CPU::cbopcode7D() { bit(7, l); }
 void CPU::cbopcode7E() { bit(7, hl); }
 void CPU::cbopcode7F() { bit(7, a); }
 
-void CPU::cbopcode80() {}
-void CPU::cbopcode81() {}
-void CPU::cbopcode82() {}
-void CPU::cbopcode83() {}
-void CPU::cbopcode84() {}
-void CPU::cbopcode85() {}
-void CPU::cbopcode86() {}
-void CPU::cbopcode87() {}
-void CPU::cbopcode88() {}
-void CPU::cbopcode89() {}
-void CPU::cbopcode8A() {}
-void CPU::cbopcode8B() {}
-void CPU::cbopcode8C() {}
-void CPU::cbopcode8D() {}
-void CPU::cbopcode8E() {}
-void CPU::cbopcode8F() {}
+void CPU::cbopcode80() { res(0, b); }
+void CPU::cbopcode81() { res(0, c); }
+void CPU::cbopcode82() { res(0, d); }
+void CPU::cbopcode83() { res(0, e); }
+void CPU::cbopcode84() { res(0, h); }
+void CPU::cbopcode85() { res(0, l); }
+void CPU::cbopcode86() { res(0, hl); }
+void CPU::cbopcode87() { res(0, a); }
+void CPU::cbopcode88() { res(1, b); }
+void CPU::cbopcode89() { res(1, c); }
+void CPU::cbopcode8A() { res(1, d); }
+void CPU::cbopcode8B() { res(1, e); }
+void CPU::cbopcode8C() { res(1, h); }
+void CPU::cbopcode8D() { res(1, l); }
+void CPU::cbopcode8E() { res(1, hl); }
+void CPU::cbopcode8F() { res(1, a); }
 
-void CPU::cbopcode90() {}
-void CPU::cbopcode91() {}
-void CPU::cbopcode92() {}
-void CPU::cbopcode93() {}
-void CPU::cbopcode94() {}
-void CPU::cbopcode95() {}
-void CPU::cbopcode96() {}
-void CPU::cbopcode97() {}
-void CPU::cbopcode98() {}
-void CPU::cbopcode99() {}
-void CPU::cbopcode9A() {}
-void CPU::cbopcode9B() {}
-void CPU::cbopcode9C() {}
-void CPU::cbopcode9D() {}
-void CPU::cbopcode9E() {}
-void CPU::cbopcode9F() {}
+void CPU::cbopcode90() { res(2, b); }
+void CPU::cbopcode91() { res(2, c); }
+void CPU::cbopcode92() { res(2, d); }
+void CPU::cbopcode93() { res(2, e); }
+void CPU::cbopcode94() { res(2, h); }
+void CPU::cbopcode95() { res(2, l); }
+void CPU::cbopcode96() { res(2, hl); }
+void CPU::cbopcode97() { res(2, a); }
+void CPU::cbopcode98() { res(3, b); }
+void CPU::cbopcode99() { res(3, c); }
+void CPU::cbopcode9A() { res(3, d); }
+void CPU::cbopcode9B() { res(3, e); }
+void CPU::cbopcode9C() { res(3, h); }
+void CPU::cbopcode9D() { res(3, l); }
+void CPU::cbopcode9E() { res(3, hl); }
+void CPU::cbopcode9F() { res(3, a); }
 
-void CPU::cbopcodeA0() {}
-void CPU::cbopcodeA1() {}
-void CPU::cbopcodeA2() {}
-void CPU::cbopcodeA3() {}
-void CPU::cbopcodeA4() {}
-void CPU::cbopcodeA5() {}
-void CPU::cbopcodeA6() {}
-void CPU::cbopcodeA7() {}
-void CPU::cbopcodeA8() {}
-void CPU::cbopcodeA9() {}
-void CPU::cbopcodeAA() {}
-void CPU::cbopcodeAB() {}
-void CPU::cbopcodeAC() {}
-void CPU::cbopcodeAD() {}
-void CPU::cbopcodeAE() {}
-void CPU::cbopcodeAF() {}
+void CPU::cbopcodeA0() { res(4, b); }
+void CPU::cbopcodeA1() { res(4, c); }
+void CPU::cbopcodeA2() { res(4, d); }
+void CPU::cbopcodeA3() { res(4, e); }
+void CPU::cbopcodeA4() { res(4, h); }
+void CPU::cbopcodeA5() { res(4, l); }
+void CPU::cbopcodeA6() { res(4, hl); }
+void CPU::cbopcodeA7() { res(4, a); }
+void CPU::cbopcodeA8() { res(5, b); }
+void CPU::cbopcodeA9() { res(5, c); }
+void CPU::cbopcodeAA() { res(5, d); }
+void CPU::cbopcodeAB() { res(5, e); }
+void CPU::cbopcodeAC() { res(5, h); }
+void CPU::cbopcodeAD() { res(5, l); }
+void CPU::cbopcodeAE() { res(5, hl); }
+void CPU::cbopcodeAF() { res(5, a); }
 
-void CPU::cbopcodeB0() {}
-void CPU::cbopcodeB1() {}
-void CPU::cbopcodeB2() {}
-void CPU::cbopcodeB3() {}
-void CPU::cbopcodeB4() {}
-void CPU::cbopcodeB5() {}
-void CPU::cbopcodeB6() {}
-void CPU::cbopcodeB7() {}
-void CPU::cbopcodeB8() {}
-void CPU::cbopcodeB9() {}
-void CPU::cbopcodeBA() {}
-void CPU::cbopcodeBB() {}
-void CPU::cbopcodeBC() {}
-void CPU::cbopcodeBD() {}
-void CPU::cbopcodeBE() {}
-void CPU::cbopcodeBF() {}
+void CPU::cbopcodeB0() { res(6, b); }
+void CPU::cbopcodeB1() { res(6, c); }
+void CPU::cbopcodeB2() { res(6, d); }
+void CPU::cbopcodeB3() { res(6, e); }
+void CPU::cbopcodeB4() { res(6, h); }
+void CPU::cbopcodeB5() { res(6, l); }
+void CPU::cbopcodeB6() { res(6, hl); }
+void CPU::cbopcodeB7() { res(6, a); }
+void CPU::cbopcodeB8() { res(7, b); }
+void CPU::cbopcodeB9() { res(7, c); }
+void CPU::cbopcodeBA() { res(7, d); }
+void CPU::cbopcodeBB() { res(7, e); }
+void CPU::cbopcodeBC() { res(7, h); }
+void CPU::cbopcodeBD() { res(7, l); }
+void CPU::cbopcodeBE() { res(7, hl); }
+void CPU::cbopcodeBF() { res(7, a); }
 
-void CPU::cbopcodeC0() {}
-void CPU::cbopcodeC1() {}
-void CPU::cbopcodeC2() {}
-void CPU::cbopcodeC3() {}
-void CPU::cbopcodeC4() {}
-void CPU::cbopcodeC5() {}
-void CPU::cbopcodeC6() {}
-void CPU::cbopcodeC7() {}
-void CPU::cbopcodeC8() {}
-void CPU::cbopcodeC9() {}
-void CPU::cbopcodeCA() {}
-void CPU::cbopcodeCB() {}
-void CPU::cbopcodeCC() {}
-void CPU::cbopcodeCD() {}
-void CPU::cbopcodeCE() {}
-void CPU::cbopcodeCF() {}
+void CPU::cbopcodeC0() { set(0, b); }
+void CPU::cbopcodeC1() { set(0, c); }
+void CPU::cbopcodeC2() { set(0, d); }
+void CPU::cbopcodeC3() { set(0, e); }
+void CPU::cbopcodeC4() { set(0, h); }
+void CPU::cbopcodeC5() { set(0, l); }
+void CPU::cbopcodeC6() { set(0, hl); }
+void CPU::cbopcodeC7() { set(0, a); }
+void CPU::cbopcodeC8() { set(1, b); }
+void CPU::cbopcodeC9() { set(1, c); }
+void CPU::cbopcodeCA() { set(1, d); }
+void CPU::cbopcodeCB() { set(1, e); }
+void CPU::cbopcodeCC() { set(1, h); }
+void CPU::cbopcodeCD() { set(1, l); }
+void CPU::cbopcodeCE() { set(1, hl); }
+void CPU::cbopcodeCF() { set(1, a); }
 
-void CPU::cbopcodeD0() {}
-void CPU::cbopcodeD1() {}
-void CPU::cbopcodeD2() {}
-void CPU::cbopcodeD3() {}
-void CPU::cbopcodeD4() {}
-void CPU::cbopcodeD5() {}
-void CPU::cbopcodeD6() {}
-void CPU::cbopcodeD7() {}
-void CPU::cbopcodeD8() {}
-void CPU::cbopcodeD9() {}
-void CPU::cbopcodeDA() {}
-void CPU::cbopcodeDB() {}
-void CPU::cbopcodeDC() {}
-void CPU::cbopcodeDD() {}
-void CPU::cbopcodeDE() {}
-void CPU::cbopcodeDF() {}
+void CPU::cbopcodeD0() { set(2, b); }
+void CPU::cbopcodeD1() { set(2, c); }
+void CPU::cbopcodeD2() { set(2, d); }
+void CPU::cbopcodeD3() { set(2, e); }
+void CPU::cbopcodeD4() { set(2, h); }
+void CPU::cbopcodeD5() { set(2, l); }
+void CPU::cbopcodeD6() { set(2, hl); }
+void CPU::cbopcodeD7() { set(2, a); }
+void CPU::cbopcodeD8() { set(3, b); }
+void CPU::cbopcodeD9() { set(3, c); }
+void CPU::cbopcodeDA() { set(3, d); }
+void CPU::cbopcodeDB() { set(3, e); }
+void CPU::cbopcodeDC() { set(3, h); }
+void CPU::cbopcodeDD() { set(3, l); }
+void CPU::cbopcodeDE() { set(3, hl); }
+void CPU::cbopcodeDF() { set(3, a); }
 
-void CPU::cbopcodeE0() {}
-void CPU::cbopcodeE1() {}
-void CPU::cbopcodeE2() {}
-void CPU::cbopcodeE3() {}
-void CPU::cbopcodeE4() {}
-void CPU::cbopcodeE5() {}
-void CPU::cbopcodeE6() {}
-void CPU::cbopcodeE7() {}
-void CPU::cbopcodeE8() {}
-void CPU::cbopcodeE9() {}
-void CPU::cbopcodeEA() {}
-void CPU::cbopcodeEB() {}
-void CPU::cbopcodeEC() {}
-void CPU::cbopcodeED() {}
-void CPU::cbopcodeEE() {}
-void CPU::cbopcodeEF() {}
+void CPU::cbopcodeE0() { set(4, b); }
+void CPU::cbopcodeE1() { set(4, c); }
+void CPU::cbopcodeE2() { set(4, d); }
+void CPU::cbopcodeE3() { set(4, e); }
+void CPU::cbopcodeE4() { set(4, h); }
+void CPU::cbopcodeE5() { set(4, l); }
+void CPU::cbopcodeE6() { set(4, hl); }
+void CPU::cbopcodeE7() { set(4, a); }
+void CPU::cbopcodeE8() { set(5, b); }
+void CPU::cbopcodeE9() { set(5, c); }
+void CPU::cbopcodeEA() { set(5, d); }
+void CPU::cbopcodeEB() { set(5, e); }
+void CPU::cbopcodeEC() { set(5, h); }
+void CPU::cbopcodeED() { set(5, l); }
+void CPU::cbopcodeEE() { set(5, hl); }
+void CPU::cbopcodeEF() { set(5, a); }
 
-void CPU::cbopcodeF0() {}
-void CPU::cbopcodeF1() {}
-void CPU::cbopcodeF2() {}
-void CPU::cbopcodeF3() {}
-void CPU::cbopcodeF4() {}
-void CPU::cbopcodeF5() {}
-void CPU::cbopcodeF6() {}
-void CPU::cbopcodeF7() {}
-void CPU::cbopcodeF8() {}
-void CPU::cbopcodeF9() {}
-void CPU::cbopcodeFA() {}
-void CPU::cbopcodeFB() {}
-void CPU::cbopcodeFC() {}
-void CPU::cbopcodeFD() {}
-void CPU::cbopcodeFE() {}
-void CPU::cbopcodeFF() {}
+void CPU::cbopcodeF0() { set(6, b); }
+void CPU::cbopcodeF1() { set(6, c); }
+void CPU::cbopcodeF2() { set(6, d); }
+void CPU::cbopcodeF3() { set(6, e); }
+void CPU::cbopcodeF4() { set(6, h); }
+void CPU::cbopcodeF5() { set(6, l); }
+void CPU::cbopcodeF6() { set(6, hl); }
+void CPU::cbopcodeF7() { set(6, a); }
+void CPU::cbopcodeF8() { set(7, b); }
+void CPU::cbopcodeF9() { set(7, c); }
+void CPU::cbopcodeFA() { set(7, d); }
+void CPU::cbopcodeFB() { set(7, e); }
+void CPU::cbopcodeFC() { set(7, h); }
+void CPU::cbopcodeFD() { set(7, l); }
+void CPU::cbopcodeFE() { set(7, hl); }
+void CPU::cbopcodeFF() { set(7, a); }
