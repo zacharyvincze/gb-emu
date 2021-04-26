@@ -297,40 +297,177 @@ void CPU::ccf() {
 /**
  * Rotations
  */
-void CPU::rlca() {
+uint8_t CPU::rlc(uint8_t value) {
     f.setSubtract(false);
     f.setHalfCarry(false);
-    f.setZero(false);
-    uint8_t bit = (a.value() & 0x80) >> 7;
-    a.set((a.value() << 1) | bit);
+    uint8_t bit = (value & 0x80) >> 7;
     f.setCarry(bit);
+    value = ((value << 1) | bit);
+    f.setZero(value == 0);
+    return value;
+}
+
+void CPU::rlc(ByteRegister& reg) { reg.set(rlc(reg.value())); }
+
+void CPU::rlc(WordRegister& reg) {
+    uint16_t value = reg.value();
+    mmu.write(value, rlc(mmu.read(value)));
+}
+
+void CPU::rlca() {
+    rlc(a);
+    f.setZero(false);
+}
+
+uint8_t CPU::rrc(uint8_t value) {
+    uint8_t bit = (value & 0x1);
+    f.setCarry(bit);
+    f.setHalfCarry(false);
+    f.setSubtract(false);
+    value = ((value >> 1) | (bit << 7));
+    f.setZero(value == 0);
+    return value;
+}
+
+void CPU::rrc(ByteRegister& reg) { reg.set(rrc(reg.value())); }
+
+void CPU::rrc(WordRegister& reg) {
+    uint16_t value = reg.value();
+    mmu.write(value, rrc(mmu.read(value)));
 }
 
 void CPU::rrca() {
-    uint8_t bit = (a.value() & 0x1);
-    f.setCarry(bit);
-    f.setHalfCarry(false);
+    rrc(a);
     f.setZero(false);
+}
+
+uint8_t CPU::rl(uint8_t value) {
+    f.setHalfCarry(false);
     f.setSubtract(false);
-    a.set((a.value() >> 1) | (bit << 7));
+    uint8_t bit = f.getCarry();
+    f.setCarry(value & 0x80);
+    value = ((value << 1) | bit);
+    f.setZero(value == 0);
+    return value;
+}
+
+void CPU::rl(ByteRegister& reg) { reg.set(rl(reg.value())); }
+
+void CPU::rl(WordRegister& reg) {
+    uint16_t value;
+    mmu.write(value, rl(mmu.read(value)));
 }
 
 void CPU::rla() {
+    rl(a);
+    f.setZero(false);
+}
+
+uint8_t CPU::rr(uint8_t value) {
     f.setHalfCarry(false);
     f.setSubtract(false);
-    f.setZero(false);
     uint8_t bit = f.getCarry();
-    f.setCarry(a.value() & 0x80);
-    a.set((a.value() << 1) | bit);
+    f.setCarry(value & 0x1);
+    value = ((value >> 1) | (bit << 7));
+    f.setZero(value == 0);
+    return value;
+}
+
+void CPU::rr(ByteRegister& reg) { reg.set(rr(reg.value())); }
+
+void CPU::rr(WordRegister& reg) {
+    uint16_t value;
+    mmu.write(value, rr(mmu.read(value)));
 }
 
 void CPU::rra() {
+    rr(a);
+    f.setZero(false);
+}
+
+uint8_t CPU::sla(uint8_t value) {
+    f.setCarry(value & 0x80);
+    value = value << 1;
+    f.setZero(value == 0);
+    f.setSubtract(false);
+    f.setHalfCarry(false);
+    return value;
+}
+void CPU::sla(ByteRegister& reg) { reg.set(sla(reg.value())); }
+void CPU::sla(WordRegister& reg) {
+    uint16_t value = reg.value();
+    mmu.write(value, sla(mmu.read(value)));
+}
+
+uint8_t CPU::sra(uint8_t value) {
+    f.setCarry(value & 0x1);
+    uint8_t bit = value & 0x80;
+    value = (value >> 1) | bit;
+    f.setZero(value == 0);
     f.setHalfCarry(false);
     f.setSubtract(false);
-    f.setZero(false);
-    uint8_t bit = f.getCarry();
-    f.setCarry(a.value() & 0x1);
-    a.set((a.value() >> 1) | (bit << 7));
+    return value;
+}
+void CPU::sra(ByteRegister& reg) { reg.set(sra(reg.value())); }
+void CPU::sra(WordRegister& reg) {
+    uint16_t value = reg.value();
+    mmu.write(value, sra(mmu.read(value)));
+}
+
+uint8_t CPU::srl(uint8_t value) {
+    f.setCarry(value & 0x1);
+    value = value >> 1;
+    f.setZero(value == 0);
+    f.setHalfCarry(false);
+    f.setSubtract(false);
+    return value;
+}
+void CPU::srl(ByteRegister& reg) { reg.set(srl(reg.value())); }
+void CPU::srl(WordRegister& reg) {
+    uint16_t value = reg.value();
+    mmu.write(value, srl(mmu.read(value)));
+}
+
+/**
+ * Bitwise
+ */
+uint8_t CPU::swap(uint8_t value) {
+    f.setCarry(false);
+    f.setHalfCarry(false);
+    f.setSubtract(false);
+    value = ((value & 0xF0) >> 4) | ((value & 0x0F) << 4);
+    f.setZero(value == 0);
+}
+void CPU::swap(ByteRegister& reg) { reg.set(swap(reg.value())); }
+void CPU::swap(WordRegister& reg) {
+    uint16_t value = reg.value();
+    mmu.write(value, swap(mmu.read(value)));
+}
+
+uint8_t CPU::bit(uint8_t n, uint8_t value) {
+    f.setHalfCarry(true);
+    f.setSubtract(false);
+    value ^= 1UL << n;
+    f.setZero(value);
+}
+void CPU::bit(uint8_t n, ByteRegister& reg) { reg.set(bit(n, reg.value())); }
+void CPU::bit(uint8_t n, WordRegister& reg) {
+    uint16_t value = reg.value();
+    mmu.write(value, bit(n, mmu.read(value)));
+}
+
+uint8_t CPU::res(uint8_t n, uint8_t value) { value &= ~(1UL << n); }
+void CPU::res(uint8_t n, ByteRegister& reg) { reg.set(res(n, reg.value())); }
+void CPU::res(uint8_t n, WordRegister& reg) {
+    uint16_t value = reg.value();
+    mmu.write(value, res(n, mmu.read(value)));
+}
+
+uint8_t CPU::set(uint8_t n, uint8_t value) { value |= 1UL << n; }
+void CPU::set(uint8_t n, ByteRegister& reg) { reg.set(set(n, reg.value())); }
+void CPU::set(uint8_t n, WordRegister& reg) {
+    uint16_t value = reg.value();
+    mmu.write(value, set(n, mmu.read(value)));
 }
 
 /**

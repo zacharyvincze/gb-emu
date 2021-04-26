@@ -74,11 +74,63 @@ class CPU {
     void dec(WordRegister& reg);
     void dec(uint16_t address);
 
+    /**
+     * Rotates and Shifts
+     */
+    uint8_t rlc(uint8_t value);
+    void rlc(ByteRegister& reg);
+    void rlc(WordRegister& reg);
     void rlca();
+
+    uint8_t rrc(uint8_t value);
+    void rrc(ByteRegister& reg);
+    void rrc(WordRegister& reg);
     void rrca();
+
+    uint8_t rl(uint8_t value);
+    void rl(ByteRegister& reg);
+    void rl(WordRegister& reg);
     void rla();
+
+    uint8_t rr(uint8_t value);
+    void rr(ByteRegister& reg);
+    void rr(WordRegister& reg);
     void rra();
 
+    uint8_t sla(uint8_t value);
+    void sla(ByteRegister& reg);
+    void sla(WordRegister& reg);
+
+    uint8_t sra(uint8_t value);
+    void sra(ByteRegister& reg);
+    void sra(WordRegister& reg);
+
+    uint8_t srl(uint8_t value);
+    void srl(ByteRegister& reg);
+    void srl(WordRegister& reg);
+
+    /**
+     * Bitwise
+     */
+    uint8_t swap(uint8_t value);
+    void swap(ByteRegister& reg);
+    void swap(WordRegister& reg);
+
+    uint8_t bit(uint8_t n, uint8_t value);
+    void bit(uint8_t n, ByteRegister& reg);
+    void bit(uint8_t n, WordRegister& reg);
+
+    uint8_t res(uint8_t n, uint8_t value);
+    void res(uint8_t n, ByteRegister& reg);
+    void res(uint8_t n, WordRegister& reg);
+
+    uint8_t set(uint8_t n, uint8_t value);
+    void set(uint8_t n, ByteRegister& reg);
+    void set(uint8_t n, WordRegister& reg);
+
+    /**
+     * Jumps and Returns
+     */
     void jr();
     void jr_cond(bool condition);
     void jp();
