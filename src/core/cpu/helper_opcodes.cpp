@@ -435,8 +435,9 @@ uint8_t CPU::swap(uint8_t value) {
     f.setCarry(false);
     f.setHalfCarry(false);
     f.setSubtract(false);
-    value = ((value & 0xF0) >> 4) | ((value & 0x0F) << 4);
-    f.setZero(value == 0);
+    uint8_t result = ((value & 0xF0) >> 4) | ((value & 0x0F) << 4);
+    f.setZero(result == 0);
+    return result;
 }
 void CPU::swap(ByteRegister& reg) { reg.set(swap(reg.value())); }
 void CPU::swap(WordRegister& reg) {
@@ -447,8 +448,9 @@ void CPU::swap(WordRegister& reg) {
 uint8_t CPU::bit(uint8_t n, uint8_t value) {
     f.setHalfCarry(true);
     f.setSubtract(false);
-    value ^= 1UL << n;
-    f.setZero(value);
+    uint8_t result = value ^ (1UL << n);
+    f.setZero(result == 0);
+    return result;
 }
 void CPU::bit(uint8_t n, ByteRegister& reg) { reg.set(bit(n, reg.value())); }
 void CPU::bit(uint8_t n, WordRegister& reg) {
@@ -456,14 +458,14 @@ void CPU::bit(uint8_t n, WordRegister& reg) {
     mmu.write(value, bit(n, mmu.read(value)));
 }
 
-uint8_t CPU::res(uint8_t n, uint8_t value) { value &= ~(1UL << n); }
+uint8_t CPU::res(uint8_t n, uint8_t value) { return value & ~(1UL << n); }
 void CPU::res(uint8_t n, ByteRegister& reg) { reg.set(res(n, reg.value())); }
 void CPU::res(uint8_t n, WordRegister& reg) {
     uint16_t value = reg.value();
     mmu.write(value, res(n, mmu.read(value)));
 }
 
-uint8_t CPU::set(uint8_t n, uint8_t value) { value |= 1UL << n; }
+uint8_t CPU::set(uint8_t n, uint8_t value) { return value | (1UL << n); }
 void CPU::set(uint8_t n, ByteRegister& reg) { reg.set(set(n, reg.value())); }
 void CPU::set(uint8_t n, WordRegister& reg) {
     uint16_t value = reg.value();
@@ -476,13 +478,19 @@ void CPU::set(uint8_t n, WordRegister& reg) {
 void CPU::jr() { pc.set(pc.value() + (int8_t)getNextByte()); }
 
 void CPU::jr_cond(bool condition) {
-    if (condition) jr();
+    if (condition) {
+        jr();
+        timer.increment_m(1);
+    }
 }
 
 void CPU::jp() { pc.set(getNextWord()); }
 
 void CPU::jp(bool condition) {
-    if (condition) jp();
+    if (condition) {
+        jp();
+        timer.increment_m(1);
+    }
 }
 
 void CPU::jp(WordRegister& reg) { pc.set(hl.value()); }
@@ -496,7 +504,10 @@ void CPU::ret() {
 }
 
 void CPU::ret(bool condition) {
-    if (condition) ret();
+    if (condition) {
+        ret();
+        timer.increment_m(3);
+    }
 }
 
 void CPU::reti() {
@@ -513,7 +524,10 @@ void CPU::call() {
 }
 
 void CPU::call(bool condition) {
-    if (condition) call();
+    if (condition) {
+        call();
+        timer.increment_m(3);
+    }
 }
 
 /**

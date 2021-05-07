@@ -19,6 +19,7 @@ CPU::CPU(MMU& mmu) : af(a, f), bc(b, c), de(d, e), hl(h, l), mmu(mmu) {
     pc.reset();
 
     f.reset();
+    timer.reset();
 
     (this->*opcodes[0])();
     running = true;
@@ -31,9 +32,12 @@ void CPU::init() {
     while (running) {
         uint8_t opcode = getNextByte();
         if (opcode == 0xCB) {
-            (this->*cb_opcodes[getNextByte()])();
+            uint8_t cb_opcode = getNextByte();
+            (this->*cb_opcodes[cb_opcode])();
+            timer.increment_m(Timing::M_TIMES_CB[cb_opcode]);
         } else {
             (this->*opcodes[opcode])();
+            timer.increment_m(Timing::M_TIMES[opcode]);
         }
     }
 }

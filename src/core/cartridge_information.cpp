@@ -26,6 +26,8 @@ const std::string CartridgeInformation::romSizeString() {
             return "1.2MByte";
         case RomSize::BYTE1_5M:
             return "1.5MByte";
+        default:
+            return "Unknown";
     };
 }
 
@@ -43,6 +45,8 @@ const std::string CartridgeInformation::ramSizeString() {
             return "64KByte";
         case RamSize::BYTE128K:
             return "128KByte";
+        default:
+            return "Unknown";
     }
 }
 
@@ -94,6 +98,8 @@ const std::string CartridgeInformation::cartridgeTypeString() {
             return "HuC3";
         case CartridgeType::HUC1_RAM_BATTERY:
             return "HuC1+RAM+BATTERY";
+        default:
+            return "Unknown";
     }
 }
 

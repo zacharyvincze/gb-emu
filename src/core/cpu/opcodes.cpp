@@ -272,5 +272,5 @@ void CPU::opcodeFA() { ld(a, getNextWord()); }
 void CPU::opcodeFB() { ei(); }
 void CPU::opcodeFC() { unimplimentedOpcode(); }
 void CPU::opcodeFD() { unimplimentedOpcode(); }
-void CPU::opcodeFE() { cp(a); }
+void CPU::opcodeFE() { cp(a, getNextByte()); }
 void CPU::opcodeFF() { rst(0x38); }

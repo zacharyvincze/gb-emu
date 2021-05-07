@@ -4,6 +4,7 @@
 
 #include "mmu.h"
 #include "register.h"
+#include "timer.h"
 
 #define INTERRUPT_FLAG 0xFFFF
 
@@ -22,6 +23,7 @@ class CPU {
    private:
     bool running;
 
+    // Registers
     WordRegister sp;
     WordRegister pc;
 
@@ -40,9 +42,13 @@ class CPU {
     HybridRegister de;
     HybridRegister hl;
 
+    // Timers
+    Timer timer;
+
     uint8_t getNextByte();
     uint16_t getNextWord();
 
+    // Dependencies
     MMU& mmu;
 
     // Helper opcodes
