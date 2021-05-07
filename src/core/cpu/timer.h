@@ -36,6 +36,7 @@ class Timer {
     void reset();
     inline void increment_m(uint8_t time) { m += time; }
     inline unsigned int get_t() { return m * 4; }
+    inline unsigned int get_m() { return m; }
 
    private:
     unsigned int m = 0;

@@ -1,3 +1,5 @@
+#include <spdlog/spdlog.h>
+
 #include "cpu.h"
 
 /**
@@ -448,14 +450,13 @@ void CPU::swap(WordRegister& reg) {
 uint8_t CPU::bit(uint8_t n, uint8_t value) {
     f.setHalfCarry(true);
     f.setSubtract(false);
-    uint8_t result = value ^ (1UL << n);
-    f.setZero(result == 0);
-    return result;
+    f.setZero(!((value >> n) & 1U));
+    return 0;  // TODO: Change this, made a mistake
 }
-void CPU::bit(uint8_t n, ByteRegister& reg) { reg.set(bit(n, reg.value())); }
+void CPU::bit(uint8_t n, ByteRegister& reg) { bit(n, reg.value()); }
 void CPU::bit(uint8_t n, WordRegister& reg) {
     uint16_t value = reg.value();
-    mmu.write(value, bit(n, mmu.read(value)));
+    bit(n, mmu.read(value));
 }
 
 uint8_t CPU::res(uint8_t n, uint8_t value) { return value & ~(1UL << n); }
@@ -475,7 +476,10 @@ void CPU::set(uint8_t n, WordRegister& reg) {
 /**
  * Jumps and Branches
  */
-void CPU::jr() { pc.set(pc.value() + (int8_t)getNextByte()); }
+void CPU::jr() {
+    int8_t byte = (int8_t)getNextByte();
+    pc.set(pc.value() + byte);
+}
 
 void CPU::jr_cond(bool condition) {
     if (condition) {

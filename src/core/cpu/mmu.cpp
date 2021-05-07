@@ -36,7 +36,11 @@ uint8_t MMU::read(uint16_t address) {
     spdlog::debug("Reading from address {0:x}", address);
     switch (address) {
         case 0x0000 ... 0x7FFF:
-            return cartridge.read(address);
+            if (bootstrap_active) {
+                return bootstrap_rom[address];
+            } else {
+                return cartridge.read(address);
+            }
         case 0x8000 ... 0x97FF:
             return data[address];
         case 0x9800 ... 0x9BFF:
@@ -69,7 +73,7 @@ uint8_t MMU::read(uint16_t address) {
 }
 
 void MMU::write(uint16_t address, uint8_t byte) {
-    spdlog::debug("Writing {0:x} to address {0:x}", byte, address);
+    spdlog::debug("Writing {0:x} to address {1:x}", byte, address);
     switch (address) {
         case 0x0000 ... 0x7FFF:
             cartridge.write(address, byte);

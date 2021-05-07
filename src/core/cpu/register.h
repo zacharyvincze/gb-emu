@@ -11,7 +11,7 @@ class ByteRegister {
     void dec() { val--; }
     void reset() { val = 0; }
     uint8_t value() { return val; }
-    void set(uint8_t value) { this->val = value; }
+    void set(uint8_t value) { val = value; }
 };
 
 class WordRegister {
@@ -19,11 +19,11 @@ class WordRegister {
     uint16_t val;
 
    public:
-    void inc() { val++; }
-    void dec() { val--; }
-    void reset() { val = 0; }
-    uint16_t value() { return val; }
-    void set(uint16_t value) { this->val = value; }
+    virtual void inc() { val++; }
+    virtual void dec() { val--; }
+    virtual void reset() { val = 0; }
+    virtual uint16_t value() { return val; }
+    virtual void set(uint16_t value) { this->val = value; }
 };
 
 class HybridRegister : public WordRegister {

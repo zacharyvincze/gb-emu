@@ -1,7 +1,10 @@
 #pragma once
 
+#include <SDL2/SDL.h>
+
 #include <iostream>
 
+#include "../gpu/gpu.h"
 #include "mmu.h"
 #include "register.h"
 #include "timer.h"
@@ -13,7 +16,7 @@ typedef void (CPU::*CPUFn)();
 
 class CPU {
    public:
-    CPU(MMU& mmu);
+    CPU(MMU& mmu, GPU& gpu);
     ~CPU();
 
     void GetCPUInformation();
@@ -50,6 +53,10 @@ class CPU {
 
     // Dependencies
     MMU& mmu;
+    GPU& gpu;
+
+    // Other stuff
+    SDL_Event event;
 
     // Helper opcodes
     void ld(WordRegister& reg);

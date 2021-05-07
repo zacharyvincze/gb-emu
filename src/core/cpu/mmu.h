@@ -26,4 +26,5 @@ class MMU {
     Cartridge& cartridge;
     uint8_t data[0x10000];
     uint8_t bootstrap_rom[0x100];
+    bool bootstrap_active = true;
 };
